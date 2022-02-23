@@ -1,0 +1,157 @@
+Sample ID,Run,Tributary,Bam,Coverage,Source
+F020137COL,Fall,Coleman,/home/maccamp/shernook/bams/F020137COL_5_S27_L004_R1_001.bam,1.56962,New
+F020140COL,Fall,Coleman,/home/maccamp/shernook/bams/F020140COL_5_S28_L004_R1_001.bam,1.50705,New
+F020142COL,Fall,Coleman,/home/maccamp/shernook/bams/F020142COL_5_S29_L004_R1_001.bam,1.39468,New
+F020154COL,Fall,Coleman,/home/maccamp/shernook/bams/F020154COL_5_S30_L004_R1_001.bam,1.5146,New
+F020158COL,Fall,Coleman,/home/maccamp/shernook/bams/F020158COL_5_S31_L004_R1_001.bam,2.32347,New
+F020164COL,Fall,Coleman,/home/maccamp/shernook/bams/F020164COL_5_S32_L004_R1_001.bam,1.42634,New
+F020022DER,Fall,Deer,/home/maccamp/shernook/bams/F020022DER_6_S75_L004_R1_001.bam,0.706674,New
+F030013DER,Fall,Deer,/home/maccamp/shernook/bams/F030013DER_17_S59_L004_R1_001.bam,2.59151,New
+F030014DER,Fall,Deer,/home/maccamp/shernook/bams/F030014DER_17_S80_L004_R1_001.bam,2.40078,New
+F040097BUT,Fall,Butte,/home/maccamp/shernook/bams/F040097BUT_t_S67_L004_R1_001.bam,0.806283,New
+F010019STN,Fall,Stanislaus,/home/maccamp/shernook/bams/F010019STN_25_S81_L004_R1_001.bam,0.921187,New
+F010289STN,Fall,Stanislaus,/home/maccamp/shernook/bams/F010289STN_26_S62_L004_R1_001.bam,1.00082,New
+F040043STN,Fall,Stanislaus,/home/maccamp/shernook/bams/F040043STN_27_S83_L004_R1_001.bam,0.505767,New
+F080016TOU,Fall,Tuolumne,/home/maccamp/shernook/bams/F080016TOU_2_S63_L004_R1_001.bam,2.16521,New
+F080027MER,Fall,Merced,/home/maccamp/shernook/bams/F080027MER_2_S97_L004_R1_001.bam,0.974221,New
+F010157MER,Fall,Merced,/home/maccamp/shernook/bams/F010157MER_18_S90_L004_R1_001.bam,1.89048,New
+F010240MER,Fall,Merced,/home/maccamp/shernook/bams/F010240MER_19_S61_L004_R1_001.bam,1.01001,New
+F010225MER,Fall,Merced,/home/maccamp/shernook/bams/F010225MER_38_S42_L004_R1_001.bam,3.25348,New
+F010226MER,Fall,Merced,/home/maccamp/shernook/bams/F010226MER_38_S93_L004_R1_001.bam,1.40483,New
+L030085USR,Late Fall,Upper Sac,/home/maccamp/shernook/bams/L030085USR_36_S39_L004_R1_001.bam,0.762554,New
+F030040MIL,Fall,Mill,/home/maccamp/shernook/bams/F030040MIL_20_S33_L004_R1_001.bam,2.86172,New
+F030045MIL,Fall,Mill,/home/maccamp/shernook/bams/F030045MIL_20_S34_L004_R1_001.bam,0.879811,New
+F030059MIL,Fall,Mill,/home/maccamp/shernook/bams/F030059MIL_20_S95_L004_R1_001.bam,0.764267,New
+F030071MIL,Fall,Mill,/home/maccamp/shernook/bams/F030071MIL_20_S35_L004_R1_001.bam,0.745379,New
+F030081MIL,Fall,Mill,/home/maccamp/shernook/bams/F030081MIL_20_S36_L004_R1_001.bam,2.76155,New
+S980004YUB,Spring,Yuba,/home/maccamp/shernook/bams/S980004YUB_43_S99_L004_R1_001.bam,2.83748,New
+S990001YUB,Spring,Yuba,/home/maccamp/shernook/bams/S990001YUB_43_S54_L004_R1_001.bam,3.08845,New
+S990002YUB,Spring,Yuba,/home/maccamp/shernook/bams/S990002YUB_43_S100_L004_R1_001.bam,1.01734,New
+S990004YUB,Spring,Yuba,/home/maccamp/shernook/bams/S990004YUB_43_S52_L004_R1_001.bam,2.46692,New
+S990005YUB,Spring,Yuba,/home/maccamp/shernook/bams/S990005YUB_43_S53_L004_R1_001.bam,2.18018,New
+S080015BUT,Spring,Butte,/home/maccamp/shernook/bams/S080015BUT_51_S107_L004_R1_001.bam,1.37419,New
+S080034BUT,Spring,Butte,/home/maccamp/shernook/bams/S080034BUT_51_S109_L004_R1_001.bam,0.517513,New
+S080037BUT,Spring,Butte,/home/maccamp/shernook/bams/S080037BUT_51_S110_L004_R1_001.bam,0.568156,New
+S080040BUT,Spring,Butte,/home/maccamp/shernook/bams/S080040BUT_51_S111_L004_R1_001.bam,1.1492,New
+S080051BUT,Spring,Butte,/home/maccamp/shernook/bams/S080051BUT_51_S112_L004_R1_001.bam,2.63439,New
+S020037DER,Spring,Deer,/home/maccamp/shernook/bams/S020037DER_54_S116_L004_R1_001.bam,0.533386,New
+S020045DER,Spring,Deer,/home/maccamp/shernook/bams/S020045DER_54_S118_L004_R1_001.bam,0.618048,New
+S020055DER,Spring,Deer,/home/maccamp/shernook/bams/S020055DER_55_S120_L004_R1_001.bam,0.559651,New
+S020061DER,Spring,Deer,/home/maccamp/shernook/bams/S020061DER_55_S56_L004_R1_001.bam,0.508915,New
+S050007DER,Spring,Deer,/home/maccamp/shernook/bams/S050007DER_55_S58_L004_R1_001.bam,1.41021,New
+S050016DER,Spring,Deer,/home/maccamp/shernook/bams/S050016DER_t_S68_L004_R1_001.bam,2.73392,New
+S050040DER,Spring,Deer,/home/maccamp/shernook/bams/S050040DER_56_S121_L004_R1_001.bam,0.574556,New
+S050054DER,Spring,Deer,/home/maccamp/shernook/bams/S050054DER_56_S122_L004_R1_001.bam,1.34355,New
+S020021MIL,Spring,Mill,/home/maccamp/shernook/bams/S020021MIL_43_S101_L004_R1_001.bam,0.542623,New
+S020023MIL,Spring,Mill,/home/maccamp/shernook/bams/S020023MIL_43_S43_L004_R1_001.bam,0.744256,New
+S020024MIL,Spring,Mill,/home/maccamp/shernook/bams/S020024MIL_43_S44_L004_R1_001.bam,0.508042,New
+S020025MIL,Spring,Mill,/home/maccamp/shernook/bams/S020025MIL_43_S45_L004_R1_001.bam,0.803957,New
+S020034MIL,Spring,Mill,/home/maccamp/shernook/bams/S020034MIL_43_S102_L004_R1_001.bam,0.749826,New
+S020035MIL,Spring,Mill,/home/maccamp/shernook/bams/S020035MIL_43_S51_L004_R1_001.bam,0.862026,New
+S020052MIL,Spring,Mill,/home/maccamp/shernook/bams/S020052MIL_43_S103_L004_R1_001.bam,0.595799,New
+S020057MIL,Spring,Mill,/home/maccamp/shernook/bams/S020057MIL_43_S105_L004_R1_001.bam,0.661445,New
+S040028MIL,Spring,Mill,/home/maccamp/shernook/bams/S040028MIL_43_S106_L004_R1_001.bam,1.11088,New
+S040031MIL,Spring,Mill,/home/maccamp/shernook/bams/S040031MIL_43_S46_L004_R1_001.bam,1.55454,New
+S040114MIL,Spring,Mill,/home/maccamp/shernook/bams/S040114MIL_43_S48_L004_R1_001.bam,1.69293,New
+S040116MIL,Spring,Mill,/home/maccamp/shernook/bams/S040116MIL_43_S49_L004_R1_001.bam,2.40219,New
+S040117MIL,Spring,Mill,/home/maccamp/shernook/bams/S040117MIL_43_S50_L004_R1_001.bam,0.527029,New
+W011922USR,Winter,Upper Sac,/home/maccamp/shernook/bams/W011922USR_41_S69_L004_R1_001.bam,4.19241,New
+W011924USR,Winter,Upper Sac,/home/maccamp/shernook/bams/W011924USR_41_S70_L004_R1_001.bam,7.18753,New
+W011933USR,Winter,Upper Sac,/home/maccamp/shernook/bams/W011933USR_41_S71_L004_R1_001.bam,4.54292,New
+W011934USR,Winter,Upper Sac,/home/maccamp/shernook/bams/W011934USR_41_S72_L004_R1_001.bam,2.93874,New
+W011812USR,Winter,Upper Sac,/home/maccamp/shernook/bams/W011812USR_41_S73_L004_R1_001.bam,3.50872,New
+W011815USR,Winter,Upper Sac,/home/maccamp/shernook/bams/W011815USR_41_S74_L004_R1_001.bam,3.24306,New
+DPCh_plate1_A05_S5,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_A05_S5.bam,1.12662,Existing
+DPCh_plate1_A06_S6,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_A06_S6.bam,0.611983,Existing
+DPCh_plate1_A07_S7,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_A07_S7.bam,1.34286,Existing
+DPCh_plate1_A08_S8,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_A08_S8.bam,1.46535,Existing
+DPCh_plate1_B05_S17,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_B05_S17.bam,1.44547,Existing
+DPCh_plate1_B06_S18,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_B06_S18.bam,1.25611,Existing
+DPCh_plate1_B07_S19,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_B07_S19.bam,1.5267,Existing
+DPCh_plate1_B08_S20,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_B08_S20.bam,1.38461,Existing
+DPCh_plate1_C05_S29,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_C05_S29.bam,1.79118,Existing
+DPCh_plate1_C06_S30,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_C06_S30.bam,1.32261,Existing
+DPCh_plate1_C07_S31,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_C07_S31.bam,0.507718,Existing
+DPCh_plate1_C08_S32,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_C08_S32.bam,1.4213,Existing
+DPCh_plate1_D05_S41,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_D05_S41.bam,1.38435,Existing
+DPCh_plate1_D06_S42,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_D06_S42.bam,1.18651,Existing
+DPCh_plate1_D07_S43,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_D07_S43.bam,1.2881,Existing
+DPCh_plate1_D08_S44,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_D08_S44.bam,1.59284,Existing
+DPCh_plate1_E05_S53,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_E05_S53.bam,0.887101,Existing
+DPCh_plate1_E06_S54,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_E06_S54.bam,0.643005,Existing
+DPCh_plate1_E07_S55,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_E07_S55.bam,1.45449,Existing
+DPCh_plate1_F05_S65,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_F05_S65.bam,1.30405,Existing
+DPCh_plate1_F06_S66,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_F06_S66.bam,1.28044,Existing
+DPCh_plate1_F07_S67,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_F07_S67.bam,1.42076,Existing
+DPCh_plate1_F08_S68,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_F08_S68.bam,1.27169,Existing
+DPCh_plate1_G05_S77,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_G05_S77.bam,2.18251,Existing
+DPCh_plate1_G06_S78,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_G06_S78.bam,1.23149,Existing
+DPCh_plate1_G07_S79,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_G07_S79.bam,1.26503,Existing
+DPCh_plate1_G08_S80,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_G08_S80.bam,1.41615,Existing
+DPCh_plate1_H05_S89,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_H05_S89.bam,1.54476,Existing
+DPCh_plate1_H06_S90,Fall,Feather River Hatchery Fall,/home/maccamp/shernook/bams/DPCh_plate1_H06_S90.bam,1.63511,Existing
+DPCh_plate1_H07_S91,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_H07_S91.bam,1.40236,Existing
+DPCh_plate1_H08_S92,Spring,Feather River Hatchery Spring,/home/maccamp/shernook/bams/DPCh_plate1_H08_S92.bam,1.33588,Existing
+DPCh_plate2_A01_S97,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_A01_S97.bam,1.42159,Existing
+DPCh_plate2_A02_S98,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_A02_S98.bam,1.14233,Existing
+DPCh_plate2_A03_S99,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_A03_S99.bam,1.61455,Existing
+DPCh_plate2_A04_S100,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_A04_S100.bam,1.14074,Existing
+DPCh_plate2_A05_S101,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_A05_S101.bam,0.966201,Existing
+DPCh_plate2_A06_S102,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_A06_S102.bam,1.3546,Existing
+DPCh_plate2_A07_S103,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_A07_S103.bam,1.56008,Existing
+DPCh_plate2_A08_S104,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_A08_S104.bam,0.569022,Existing
+DPCh_plate2_B01_S105,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_B01_S105.bam,1.61985,Existing
+DPCh_plate2_B02_S106,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_B02_S106.bam,2.02346,Existing
+DPCh_plate2_B03_S107,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_B03_S107.bam,1.25631,Existing
+DPCh_plate2_B04_S108,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_B04_S108.bam,0.662875,Existing
+DPCh_plate2_B05_S109,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_B05_S109.bam,1.72189,Existing
+DPCh_plate2_B06_S110,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_B06_S110.bam,1.74834,Existing
+DPCh_plate2_B07_S111,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_B07_S111.bam,1.26929,Existing
+DPCh_plate2_B08_S112,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_B08_S112.bam,0.967269,Existing
+DPCh_plate2_C01_S113,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_C01_S113.bam,1.29413,Existing
+DPCh_plate2_C02_S114,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_C02_S114.bam,1.2897,Existing
+DPCh_plate2_C03_S115,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_C03_S115.bam,1.44121,Existing
+DPCh_plate2_C04_S116,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_C04_S116.bam,1.24953,Existing
+DPCh_plate2_C05_S117,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_C05_S117.bam,1.11872,Existing
+DPCh_plate2_C06_S118,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_C06_S118.bam,1.8565,Existing
+DPCh_plate2_C07_S119,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_C07_S119.bam,0.988591,Existing
+DPCh_plate2_D01_S121,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_D01_S121.bam,1.48942,Existing
+DPCh_plate2_D02_S122,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_D02_S122.bam,1.39757,Existing
+DPCh_plate2_D03_S123,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_D03_S123.bam,1.42507,Existing
+DPCh_plate2_D04_S124,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_D04_S124.bam,1.2161,Existing
+DPCh_plate2_D05_S125,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_D05_S125.bam,1.74885,Existing
+DPCh_plate2_D06_S126,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_D06_S126.bam,1.95742,Existing
+DPCh_plate2_D07_S127,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_D07_S127.bam,1.87868,Existing
+DPCh_plate2_D08_S128,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_D08_S128.bam,2.73778,Existing
+DPCh_plate2_E01_S129,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_E01_S129.bam,1.4786300000000001,Existing
+DPCh_plate2_E02_S130,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_E02_S130.bam,1.42553,Existing
+DPCh_plate2_E03_S131,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_E03_S131.bam,1.38949,Existing
+DPCh_plate2_E04_S132,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_E04_S132.bam,1.5219,Existing
+DPCh_plate2_E05_S133,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_E05_S133.bam,1.49485,Existing
+DPCh_plate2_E06_S134,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_E06_S134.bam,2.01624,Existing
+DPCh_plate2_E07_S135,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_E07_S135.bam,1.55325,Existing
+DPCh_plate2_E08_S136,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_E08_S136.bam,0.875735,Existing
+DPCh_plate2_F01_S137,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_F01_S137.bam,1.70787,Existing
+DPCh_plate2_F02_S138,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_F02_S138.bam,1.57726,Existing
+DPCh_plate2_F03_S139,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_F03_S139.bam,1.5747,Existing
+DPCh_plate2_F04_S140,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_F04_S140.bam,1.29507,Existing
+DPCh_plate2_F05_S141,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_F05_S141.bam,1.55537,Existing
+DPCh_plate2_F06_S142,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_F06_S142.bam,2.16937,Existing
+DPCh_plate2_F07_S143,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_F07_S143.bam,1.55325,Existing
+DPCh_plate2_F08_S144,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_F08_S144.bam,0.996617,Existing
+DPCh_plate2_G01_S145,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_G01_S145.bam,1.83365,Existing
+DPCh_plate2_G02_S146,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_G02_S146.bam,1.96949,Existing
+DPCh_plate2_G03_S147,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_G03_S147.bam,1.93257,Existing
+DPCh_plate2_G04_S148,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_G04_S148.bam,1.63154,Existing
+DPCh_plate2_G05_S149,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_G05_S149.bam,1.57736,Existing
+DPCh_plate2_G06_S150,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_G06_S150.bam,0.844599,Existing
+DPCh_plate2_G07_S151,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_G07_S151.bam,2.01421,Existing
+DPCh_plate2_G08_S152,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_G08_S152.bam,0.846337,Existing
+DPCh_plate2_H01_S153,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_H01_S153.bam,1.35898,Existing
+DPCh_plate2_H02_S154,Fall,San Joaquin River Fall,/home/maccamp/shernook/bams/DPCh_plate2_H02_S154.bam,2.22132,Existing
+DPCh_plate2_H03_S155,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_H03_S155.bam,1.71644,Existing
+DPCh_plate2_H04_S156,Late Fall,Coleman Hatchery Late Fall,/home/maccamp/shernook/bams/DPCh_plate2_H04_S156.bam,1.68548,Existing
+DPCh_plate2_H05_S157,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_H05_S157.bam,2.08629,Existing
+DPCh_plate2_H06_S158,Winter,Sacramento River Winter,/home/maccamp/shernook/bams/DPCh_plate2_H06_S158.bam,2.46558,Existing
+DPCh_plate2_H07_S159,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_H07_S159.bam,1.64135,Existing
+DPCh_plate2_H08_S160,Spring,Butte Creek Spring,/home/maccamp/shernook/bams/DPCh_plate2_H08_S160.bam,1.08703,Existing

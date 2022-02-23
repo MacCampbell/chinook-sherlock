@@ -1,0 +1,159 @@
+---
+title: "300-more-data"
+author: "Mac Campbell"
+date: "October 26, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(data.table)
+```
+
+## Adding in Thompson et al. data
+I was able to get gdrive off the ground on the cluster.  Had to create my own credentials with google for an API. Then I was able to use gdrive, two key commands:     
+`gdrive list --query "sharedWithMe"`     
+`gdrive download --recursive 1brKJixcc6Pm8kyTU4jA9iNnNmzxkTsEm`     
+Moving rather quickly.     
+
+Some ideas:
+__1__ Need to align the same (left align with new gatk method or with bcftools with vcf?)   
+      Also should check on the filtering (pcr duplicates removed, yes, not all properly paired reads, hmm).    
+      
+__2__ Need to drop low quality samples and the Klamath.      
+
+
+Left aligning, keeping only properly paired reads. See 101.1     
+
+I need to put this into a path that angsd won't balk at. Putting in bams/    
+```{r}
+mm<-read_csv("~/github/cv-chinook/processed_data/wgs-chinoook-samples-cleaned.csv") 
+```
+
+
+
+Examine coverage ....     
+```{r}
+files<-list.files(path="outputs/300/cov", pattern="*.cov", full.names=TRUE)
+list<-lapply(files, read_tsv, col_names=FALSE) 
+names<-lapply(files, basename)
+all<-mapply(c, list, names, SIMPLIFY = FALSE)
+comb<-as_tibble(rbindlist(all, fill=T)) %>% rename(Coverage=X1, CovFile=V1)
+
+comb$SeqFile<-gsub(".cov","",comb$CovFile)
+comb<-select(comb, -CovFile)
+
+df<-left_join(mm,comb, by=c("vcf_name"="SeqFile")) %>% filter(Coverage !="NA")
+nrow(df)
+df$Coverage<-as.numeric(df$Coverage)
+mean(df$Coverage)
+
+ggplot(df) +
+  geom_histogram(aes(Coverage, fill=Population)) +
+  theme_bw() +
+  theme(panel.grid=element_blank()) +
+  ylab("Count") +
+  theme(axis.title = element_text(face="bold")) +
+  scale_y_continuous(breaks=c(0,5,10,15))
+```
+
+Remove Klamath fish and low ballers.    
+```{r}
+dfm <- df %>%
+   filter(!(Population %in% c("Salmon River Fall","Salmon River Spring",
+                              "Trinity River Hatchery Spring","Trinity River Hatchery Fall"))) %>%
+  filter(Coverage >= 0.5) %>% mutate(Bam=paste0("/home/maccamp/shernook/bams/",vcf_name,".bam")) %>%
+  mutate(Source="Existing")
+
+nrow(dfm)
+mean(dfm$Coverage)
+
+ggplot(dfm) +
+  geom_histogram(aes(Coverage, fill=Population)) +
+  theme_bw() +
+  theme(panel.grid=element_blank()) +
+  ylab("Count") +
+  theme(axis.title = element_text(face="bold")) +
+  scale_y_continuous(breaks=c(0,5,10,15))
+```
+
+
+### Combinine
+Let's combine all the bams and meta.
+```{r}
+load("meta/df2.rda")
+df2<-df2 %>% mutate(Source="New") %>% select(`Sample ID`, Run, Tributary, Bam, Coverage, Source)
+
+dfm<-dfm %>% rename(`Sample ID` = vcf_name, Run=run_type, Tributary=Population) %>% select(`Sample ID`, Run, Tributary, Bam, Coverage, Source)
+
+tot<-bind_rows(df2,dfm)
+save(tot, file="meta/tot.rda")
+write_csv(tot, "meta/156-sequences.csv")
+```
+
+```{r}
+total<-tot %>% select(Run, Tributary, `Sample ID`, Coverage, Source)
+total$Source<-gsub("New","This Study", total$Source)
+total$Source<-gsub("Existing","Thompson et al. 2020", total$Source)
+
+#link DPCh_plate1_A05_S5 to SRA nums
+sra<-read_csv("meta/SraRunInfo.csv") %>% select(SampleName, Run) %>% dplyr::rename("SRA Accession"=Run)
+
+total2<-left_join(total,sra, by=c("Sample ID"="SampleName"))
+```
+Great. Now to generate a table of Table of cov and if they are used in the study.
+
+Generate some summary data:
+
+```{r}
+tot %>% filter(Source=="Existing") %>% group_by(Tributary, Run) %>% summarize(Count=n()) %>% ungroup() %>% mutate(Total=sum(Count))
+```
+
+
+```{r}
+ggplot(tot) +
+  geom_histogram(aes(Coverage, fill=Source)) +
+  theme_bw() +
+  theme(panel.grid=element_blank()) +
+  ylab("Count") +
+  theme(axis.title = element_text(face="bold")) +
+  scale_y_continuous(breaks=c(0,5,10,15))
+```
+
+```{r}
+bams<-select(tot, Bam)
+write_tsv(bams, "bamlists/bamlist156.bamlist", col_names = FALSE)
+```
+
+###Phenotype Files
+We need three comparisons:    
+__1__ Early vs. Late      
+__2__ Winter vs. Spring      
+__3__ Fall vs. Late-Fall   
+0 for cases, 1 for controls.     
+```{r}
+p1<-tot %>% mutate(Phenotype=ifelse(Run %in% c("Winter","Spring"),"0","1"))
+p2<-tot %>% filter(Run %in% c("Winter","Spring")) %>% mutate(Phenotype=ifelse(Run=="Winter","0","1"))
+p3<-tot %>% filter(Run %in% c("Fall","Late Fall")) %>% mutate(Phenotype=ifelse(Run=="Late Fall","0","1"))
+
+pheno1<-select(p1, Phenotype)
+write_tsv(pheno1, col_names = FALSE, "bamlists/bamlist156-early-late.pheno")
+
+pheno2<-select(p2, Phenotype)
+write_tsv(pheno2, col_names = FALSE, "bamlists/bamlist156-winter-spring.pheno")
+
+bam2<-select(p2, Bam)
+write_tsv(bam2, "bamlists/bamlist156-winter-spring.bamlist", col_names = FALSE)
+
+#print out lists of individuals
+spring156<-p2 %>% filter(Run == "Spring") %>% select(Bam)
+write_tsv(spring156, col_names=FALSE, "meta/bamlist156-spring.txt")
+
+winter156<-p2 %>% filter(Run == "Winter") %>% select(Bam)
+write_tsv(winter156, col_names=FALSE, "meta/bamlist156-winter.txt")
+
+```

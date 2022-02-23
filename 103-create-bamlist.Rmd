@@ -1,0 +1,128 @@
+---
+title: "103-create-bamlist"
+author: "Mac Campbell"
+date: "October 13, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+Updating on 10/28/2020 with all 96 samples.
+
+```{r}
+library(tidyverse)
+library(data.table)
+```
+
+## Load Meta
+```{r}
+meta<-read_csv("meta/ChinookWGS_metadata.csv")
+
+seqs<-read_csv("meta/seqnames.csv")%>% separate(SeqFile, sep="_", into = c("Sample ID","A","B","C","D","E"), remove=FALSE) %>%
+            select(`Sample ID`,SeqFile)
+
+meta<-left_join(meta,seqs)
+#our bamfiles will be in bams/ with the full name of the form "W011934USR_41_S72_L004_R1_001.bam"
+
+meta <- meta %>% mutate(Bam = paste0("/home/maccamp/shernook/bams/",SeqFile,".bam"))
+
+save(meta, file="meta/meta.rda")
+```
+
+Distribution
+
+```{r}
+meta %>% group_by(Run) %>% summarize(Count=n())
+```
+
+## Load Coverage
+
+```{r}
+files<-list.files(path="outputs/100", pattern="*.cov", full.names=TRUE)
+list<-lapply(files, read_tsv, col_names=FALSE) 
+names<-lapply(files, basename)
+all<-mapply(c, list, names, SIMPLIFY = FALSE)
+comb<-as_tibble(rbindlist(all, fill=T)) %>% rename(Coverage=X1, CovFile=V1)
+
+comb$SeqFile<-gsub(".cov","",comb$CovFile)
+comb<-select(comb, -CovFile)
+```
+
+Merge.
+
+```{r}
+df<-left_join(meta,comb) %>% filter(Coverage !="NA")
+nrow(df)
+mean(df$Coverage)
+
+ggplot(df) +
+  geom_histogram(aes(Coverage, fill=`Sampling Method`)) +
+  theme_bw() +
+  theme(panel.grid=element_blank()) +
+  ylab("Count") +
+  theme(axis.title = element_text(face="bold")) +
+  scale_y_continuous(breaks=c(0,5,10,15))
+```
+
+## Remove low ballers
+```{r}
+#df2<-df %>% top_frac(.85,Coverage)
+df2 <- df %>% filter( Coverage >= 0.5)
+
+save(df2, file="meta/df2.rda")
+
+nrow(df2)
+mean(df2$Coverage)
+
+df2 %>% group_by(Run) %>% summarize(Count=n())
+
+ggplot(df2) +
+  geom_histogram(aes(Coverage, fill=`Sampling Method`)) +
+  theme_bw() +
+  theme(panel.grid=element_blank()) +
+  ylab("Count") +
+  theme(axis.title = element_text(face="bold")) +
+  scale_y_continuous(breaks=c(0,5,10,15))
+
+
+
+ggplot(df2) +
+  geom_histogram(aes(Coverage, fill=Run)) +
+  scale_fill_brewer(type = "div") +
+  theme_bw() +
+  theme(panel.grid=element_blank()) +
+  ylab("Count") +
+  theme(axis.title = element_text(face="bold")) +
+  scale_y_continuous(breaks=c(0,5,10,15))
+
+
+```
+
+```{r}
+bams<-select(df2, Bam)
+write_tsv(bams, "bamlists/bamlist62.bamlist", col_names = FALSE)
+```
+
+###Phenotype Files
+We need three comparisons:    
+__1__ Early vs. Late      
+__2__ Winter vs. Spring      
+__3__ Fall vs. Late-Fall   
+0 for cases, 1 for controls.     
+```{r}
+p1<-df2 %>% mutate(Phenotype=ifelse(Run %in% c("Winter","Spring"),"0","1"))
+p2<-df2 %>% filter(Run %in% c("Winter","Spring")) %>% mutate(Phenotype=ifelse(Run=="Winter","0","1"))
+p3<-df2 %>% filter(Run %in% c("Fall","Late Fall")) %>% mutate(Phenotype=ifelse(Run=="Late Fall","0","1"))
+
+pheno1<-select(p1, Phenotype)
+write_tsv(pheno1, col_names = FALSE, "bamlists/bamlist62-early-late.pheno")
+
+pheno2<-select(p2, Phenotype)
+write_tsv(pheno2, col_names = FALSE, "bamlists/bamlist62-winter-spring.pheno")
+
+bam2<-select(p2, Bam)
+write_tsv(bam2, "bamlists/bamlist62-winter-spring.bamlist", col_names = FALSE)
+
+```

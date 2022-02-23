@@ -1,0 +1,16 @@
+DPCh_plate2_A05_S101
+DPCh_plate2_A06_S102
+DPCh_plate2_B05_S109
+DPCh_plate2_B06_S110
+DPCh_plate2_C05_S117
+DPCh_plate2_C06_S118
+DPCh_plate2_D05_S125
+DPCh_plate2_D06_S126
+DPCh_plate2_E05_S133
+DPCh_plate2_E06_S134
+DPCh_plate2_F05_S141
+DPCh_plate2_F06_S142
+DPCh_plate2_G05_S149
+DPCh_plate2_G06_S150
+DPCh_plate2_H05_S157
+DPCh_plate2_H06_S158

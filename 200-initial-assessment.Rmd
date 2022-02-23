@@ -1,0 +1,436 @@
+---
+title: "200-initial-assessment"
+author: "Mac Campbell"
+date: "October 15, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+library(ggpubr)
+library(RColorBrewer)
+```
+
+### PCA
+We can check out the data a bit with a PCA.     
+To speed things up, I'll only look at a single chrom at first... Actually, let's do four chroms, but in a parallel way.     
+1, 16, 28, 34? NC_037097.1, NC_037112.1, NC_037124.1, NC_037130.1
+
+Wrote up something to run by chrom. See 201-parallelize-analyses.sh
+
+I should just be able to combine the *.beagle.gz files and then use PCAngsd. Only thing is not to duplicate header lines
+110,072 SNPS.    
+
+
+```{sh, eval=FALSE}
+python $HOME/pcangsd/pcangsd.py -beagle test-chroms.beagle.gz -o test-chroms -threads 10
+```
+Read 56 samples and 1114232 sites     
+
+```{r}
+#' @param samples character vector with the individuals IDs in the order in which
+#' they were passed in the bamlist to angsd.
+#' @param cov covariance matrix
+covar2pcs <- function(samples, cov) {
+  
+  
+  eig <- eigen(cov, symm = TRUE)
+  PC <- as.data.frame(eig$vectors) %>%
+    as_tibble() %>%
+    setNames(sprintf("PC-%02d", 1:ncol(.)))
+  
+  samtib <- tibble(sample = samples)
+  
+  list(
+    PCs = bind_cols(samtib, PC),
+    eigevalues = eig$values
+  )
+}
+
+```
+
+```{r}
+cov<-read_delim("outputs/200/test-chroms.cov", col_names=FALSE, delim=" ") %>% as.matrix()
+
+load("meta/df2.rda")
+
+pca <- covar2pcs(df2$`Sample ID`, cov)
+
+pca_long <- pca$PCs %>%
+  tidyr::gather(., key = "PC", "val", -sample)
+
+# then expand a grid of the possible comparisons (ordered)
+expg <- expand.grid(sample = pca$PCs$sample,
+                    PCx = sprintf("PC-%02d", 1:6),
+                    PCy = sprintf("PC-%02d", 1:6),
+                    stringsAsFactors = FALSE) %>%
+  tibble::as_tibble()
+
+# then left join the pca results onto that
+pca_pairs <- dplyr::left_join(expg, pca_long, by = c("sample", "PCx" = "PC")) %>%
+  dplyr::rename(val_x = val) %>%
+  dplyr::left_join(pca_long, by = c("sample", "PCy" = "PC")) %>%
+  dplyr::rename(val_y = val)
+
+pp_meta <- pca_pairs %>%   # just keep the first 6 PCs around
+  left_join(., df2, by = c("sample" = "Sample ID")) 
+
+npc <- 3
+pp_meta2 <- pp_meta %>%
+  filter( (PCx %in% sprintf("PC-%02d", 1:npc)) & 
+            (PCy %in% sprintf("PC-%02d", 1:npc)) )
+
+eig <- eigen(cov, symm = TRUE)
+var<-eig$values/sum(eig$values)
+cumvar<-cumsum(eig$values)/sum(eig$values)
+
+```
+
+```{r}
+ggplot(pp_meta2) +
+  geom_point(aes(x=val_x, y=val_y, shape=Run, color=Tributary)) +
+  coord_fixed() +
+  facet_grid (PCx ~ PCy)
+```
+
+Some good things, Winter Run fish are divergent.    
+
+### PC of all chroms
+
+`bash $HOME/shernook/201-parallelize-analyses.sh $HOME/shernook/bamlists/bamlist56.bamlist $HOME/shernook/meta/GCF_002872995.1.chroms-less-test.chroms`      
+`python $HOME/pcangsd/pcangsd.py -beagle allchroms.beagle.gz -o all-chroms -threads 10`      
+
+Read 56 samples and 9005452 sites     
+Number of sites after MAF filtering (0.05): 7580414     
+
+
+```{r}
+cov<-read_delim("outputs/200/all-chroms.cov", col_names=FALSE, delim=" ") %>% as.matrix()
+
+pca <- covar2pcs(df2$`Sample ID`, cov)
+
+pca_long <- pca$PCs %>%
+  tidyr::gather(., key = "PC", "val", -sample)
+
+# then expand a grid of the possible comparisons (ordered)
+expg <- expand.grid(sample = pca$PCs$sample,
+                    PCx = sprintf("PC-%02d", 1:6),
+                    PCy = sprintf("PC-%02d", 1:6),
+                    stringsAsFactors = FALSE) %>%
+  tibble::as_tibble()
+
+# then left join the pca results onto that
+pca_pairs <- dplyr::left_join(expg, pca_long, by = c("sample", "PCx" = "PC")) %>%
+  dplyr::rename(val_x = val) %>%
+  dplyr::left_join(pca_long, by = c("sample", "PCy" = "PC")) %>%
+  dplyr::rename(val_y = val)
+
+pp_meta <- pca_pairs %>%   # just keep the first 6 PCs around
+  left_join(., df2, by = c("sample" = "Sample ID")) 
+
+npc <- 3
+pp_meta2 <- pp_meta %>%
+  filter( (PCx %in% sprintf("PC-%02d", 1:npc)) & 
+            (PCy %in% sprintf("PC-%02d", 1:npc)) )
+
+eig <- eigen(cov, symm = TRUE)
+var<-eig$values/sum(eig$values)
+cumvar<-cumsum(eig$values)/sum(eig$values)
+
+
+ggplot(pp_meta2) +
+  geom_point(aes(x=val_x, y=val_y, shape=Run, color=Tributary)) +
+  coord_fixed() +
+  facet_grid (PCx ~ PCy)
+
+ggsave("outputs/200/all-chroms.jpeg")
+```
+
+A better plot of PC1 vs PC2 and PC1 vs PC3.     
+
+```{r}
+sub12<-pp_meta2 %>% filter( (PCx =="PC-01") & (PCy =="PC-02") )
+centers12<-sub12 %>% group_by(Tributary) %>% mutate(MeanX=mean(val_x), MeanY=mean(val_y)) %>% 
+  select(Tributary, MeanX, MeanY) %>% unique()
+
+
+pc12<-ggplot(sub12, aes(x = val_x, y = val_y, color = Tributary)) +
+  geom_point(aes(shape=Run), size = 2, alpha=0.75) +
+  geom_text_repel(data=centers12, aes(x=MeanX, y=MeanY, label=Tributary), color="black", fontface='bold', size=2)+
+  scale_fill_discrete(na.value = "white") + 
+  theme_bw()+
+  theme(panel.grid=element_blank())+
+  xlab(paste("PC1", " ", round((100*var[1]),2), "%", sep = ""))+
+  ylab(paste("PC2", " ", round((100*var[2]),2), "%", sep = ""))+
+  theme(legend.position = "")+
+  ggtitle("PCs 1 & 2")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+sub13<-pp_meta2 %>% filter( (PCx =="PC-01") & (PCy =="PC-03") )
+centers13<-sub13 %>% group_by(Tributary) %>% mutate(MeanX=mean(val_x), MeanY=mean(val_y)) %>% 
+  select(Tributary, MeanX, MeanY) %>% unique()
+
+pc13<-ggplot(sub13, aes(x = val_x, y = val_y, color = Tributary)) +
+  geom_point(aes(shape=Run), size = 2, alpha=0.75) +
+  geom_text_repel(data=centers13, aes(x=MeanX, y=MeanY, label=Tributary), color="black", fontface='bold', size=2)+
+  scale_fill_discrete(na.value = "white") + 
+  theme_bw()+
+  theme(panel.grid=element_blank())+
+  xlab(paste("PC1", " ", round((100*var[1]),2), "%", sep = ""))+
+  ylab(paste("PC3", " ", round((100*var[3]),2), "%", sep = ""))+
+  ggtitle("PCs 1 & 3")+
+  theme(plot.title = element_text(hjust = 0.5)) 
+
+
+ggarrange(pc12, pc13, ncol = 2, widths=c(1,1.4))
+```
+
+
+## Big Question?
+Can we detect differences in the test chroms with an association test? See 202-do-asso.sh
+
+From the four test chroms (Ots1, Ots16, Ots28 and Ots34), what do we find in early v late comparison?
+
+```{r}
+d1 <-  read_tsv("outputs/200/NC_037097.1-asso.lrt0.gz")
+d16 <- read_tsv("outputs/200/NC_037112.1-asso.lrt0.gz")
+d28 <- read_tsv("outputs/200/NC_037124.1-asso.lrt0.gz")
+d34 <- read_tsv("outputs/200/NC_037130.1-asso.lrt0.gz")
+
+data<-bind_rows(d1,d16,d28,d34)
+
+data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
+  filter(log10p > 1)
+
+ggplot(data) + geom_point(aes(x=Position, y=log10p, color=log10p), alpha=0.75, cex=0.7)+
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  scale_color_gradient(low="grey",high="skyblue") +
+  theme_bw()+
+  theme(axis.text.x= element_text(angle=45,hjust=1)) +
+  theme(panel.grid = element_blank()) +
+  ylab("-log10(p)") +
+  facet_wrap(.~Chromosome, scales = "free_x")
+``` 
+
+What is our top hit?
+```{r}
+data %>% arrange(-log10p) %>% head()
+
+```
+How narrowly are these distributed in the genome?
+```{r}
+temp<-filter(data, log10p >= 6) %>% filter(Chromosome =="NC_037124.1") %>% arrange(Position)
+
+ggplot(temp) +
+  geom_histogram(aes(x=Position)) +
+  ylab("Count") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+```
+
+Manhattan Style!!!
+
+```{r}
+dd <- data %>% mutate(Index=1:n())
+
+chroms<-dd %>% group_by(Chromosome) %>% mutate(Start=min(Index), Stop=max(Index)) %>% 
+  select(Chromosome,Start,Stop) %>% unique() %>% 
+  mutate(Position=round((Start+Stop)/2))
+
+outliers <- dd %>% filter(log10p >=6)
+#Make enough colors
+nb.cols <- nrow(chroms)
+mycolors <- colorRampPalette(brewer.pal(8, "Set1"))(nb.cols)
+
+
+ggplot(dd) +
+  geom_point(data=dd, aes(x=Index, y=log10p, color=Chromosome), alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Index, y=log10p), color="black", cex=0.5, alpha=0.9) +
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  theme_bw() +
+  scale_x_continuous(breaks=chroms$Position, labels=chroms$Chromosome) +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  scale_color_manual(values=mycolors) +
+  ylab("-log10(p)") +
+  xlab("Chromosome") +
+  ggtitle("Early vs Late Comparison") +
+  theme(plot.title = element_text(hjust=0.5) )
+
+ggsave("outputs/200/early-late.jpeg")
+```
+
+Neato! That looks about right so let's consider how to generate some variant calls that can allow us to pull indels (not part of ANGSD GWAS).
+
+e.g `srun -p med -t 8:00:00 --nodes=1 bcftools mpileup -Ou --fasta-ref ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -r NC_037124.1:9233657-13595086 -b bamlists/bamlist56.bamlist | \
+bcftools call -mv -Ob -o outputs/200/bamlist56-chrom28.bcf`
+
+## Big Question continued
+What about Winter versus Spring?     
+We have 33 total samples, and 5 of those from Winter. But let's take a crack with an association test anyways, especially with the strong prior belief about Ots16.      
+
+Running in outputs/202/ .....    
+
+Recycling code:     
+```{r}
+d1 <-  read_tsv("outputs/202/NC_037097.1-asso.lrt0.gz")
+d16 <- read_tsv("outputs/202/NC_037112.1-asso.lrt0.gz")
+d28 <- read_tsv("outputs/202/NC_037124.1-asso.lrt0.gz")
+d34 <- read_tsv("outputs/202/NC_037130.1-asso.lrt0.gz")
+
+data<-bind_rows(d1,d16,d28,d34)
+
+data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
+  filter(log10p > 1)
+
+ggplot(data) + geom_point(aes(x=Position, y=log10p, color=log10p), alpha=0.75, cex=0.7)+
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  scale_color_gradient(low="grey",high="skyblue") +
+  theme_bw()+
+  theme(axis.text.x= element_text(angle=45,hjust=1)) +
+  theme(panel.grid = element_blank()) +
+  ylab("-log10(p)") +
+  facet_wrap(.~Chromosome, scales = "free_x")
+``` 
+
+What is our top hit?
+```{r}
+data %>% arrange(-log10p) %>% head()
+
+```
+How narrowly are these distributed in the genome?
+```{r}
+temp<-filter(data, log10p >= 6) %>% filter(Chromosome =="NC_037112.1") %>% arrange(Position)
+
+ggplot(temp) +
+  geom_histogram(aes(x=Position)) +
+  ylab("Count") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+```
+
+Manhattan Style!!!
+
+```{r}
+dd <- data %>% mutate(Index=1:n())
+
+chroms<-dd %>% group_by(Chromosome) %>% mutate(Start=min(Index), Stop=max(Index)) %>% 
+  select(Chromosome,Start,Stop) %>% unique() %>% 
+  mutate(Position=round((Start+Stop)/2))
+
+outliers <- dd %>% filter(log10p >=6)
+#Make enough colors
+nb.cols <- nrow(chroms)
+mycolors <- colorRampPalette(brewer.pal(8, "Set1"))(nb.cols)
+
+
+ggplot(dd) +
+  geom_point(data=dd, aes(x=Index, y=log10p, color=Chromosome), alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Index, y=log10p), color="black", cex=0.5, alpha=0.9) +
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  theme_bw() +
+  scale_x_continuous(breaks=chroms$Position, labels=chroms$Chromosome) +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  scale_color_manual(values=mycolors) +
+  ylab("-log10(p)") +
+  xlab("Chromosome") +
+  ggtitle("Spring vs Winter Comparison") +
+  theme(plot.title = element_text(hjust=0.5) )
+
+```
+
+Well, that's interesting.  Small sample size at work (n=5 for winter)? Let's use the larger (n=56) data set to generate some variable sites around that first peak of association in Ots16
+
+`srun -p med -t 8:00:00 --nodes=1 bcftools mpileup -Ou --fasta-ref ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -r NC_037112.1:22424576-28717394 -b bamlists/bamlist56.bamlist | \ bcftools call -mv -Ob -o outputs/202/bamlist56-chrom16.bcf`
+
+Looks like 82 of the 106 variants I found earlier are present....
+
+Looking at just indels now.    
+```{sh, eval=FALSE}
+bcftools view -R indel-site-list.txt bamlist56-chrom16.bcf  > bamlist56-chrom16-indels.vcf
+bcftools view -S winter-samples.txt bamlist56-chrom16-indels.vcf | bcftools  query  -f '%CHROM %POS  GTs:[ %GT]\n'
+#Made separate files
+bcftools view -S winter-samples.txt bamlist56-chrom16-indels.vcf > winter.vcf
+bcftools view -S not-winter.txt bamlist56-chrom16-indels.vcf > not-winter.vcf
+
+#Redoing with only indels
+bcftools view -S winter-samples.txt -V snps bamlist56-chrom16.vcf > winter.vcf
+bcftools view -S not-winter.txt -V snps bamlist56-chrom16.vcf > not-winter.vcf
+bcftools view -S spring.txt -V snps bamlist56-chrom16.vcf > spring.vcf
+
+vcftools --vcf winter.vcf --freq --out winter
+vcftools --vcf not-winter.vcf --freq --out not-winter 
+vcftools --vcf spring.vcf --freq --out spring
+```
+
+
+Need to rethink this with differences between our Spring and Winter being the main concern....
+
+
+```{r}
+freq1<-read_tsv("outputs/202/winter.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAllelesWinter=X3, NWinter=X4, Major=X5, Minor=X6) %>%
+  separate(Major, into=c("Major","MajorFrequencyWinter"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequencyWinter"), sep=":")
+freq1$MajorFrequencyWinter<-as.numeric(freq1$MajorFrequencyWinter)
+freq1$MinorFrequencyWinter<-as.numeric(freq1$MinorFrequencyWinter)
+
+freq2<-read_tsv("outputs/202/spring.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAlleles=X3, N=X4, Major=X5, Minor=X6)%>%
+  separate(Major, into=c("Major","MajorFrequency"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequency"), sep=":")
+freq2$MajorFrequency<-as.numeric(freq2$MajorFrequency)
+freq2$MinorFrequency<-as.numeric(freq2$MinorFrequency)
+
+comb<-left_join(freq2, freq1)
+```
+
+```{r}
+merge<-comb %>% mutate(AbsoluteDifference=abs(MajorFrequencyWinter-MajorFrequency)) %>% 
+  select(Chromosome, Position, Major, Minor, MajorFrequency, MajorFrequencyWinter, AbsoluteDifference, N, NWinter) %>% 
+  filter(N > 30, NWinter > 8) %>% arrange(-AbsoluteDifference)
+
+write_csv(head(merge, 100),"outputs/202/top-100-indels.csv")
+
+merge
+```
+
+
+
+Looking at not-winter to winter.
+The upper limit of our absolute difference is 0.883 here. Hmm... 
+NC_037112.1	28275372	2	10	TTTAAAAATT:0.1	TTT:0.9
+NC_037112.1	28275372	2	58	TTTAAAAATT:0.982759	TTT:0.0172414
+
+
+Found in both analyses?
+Chromosome	Position	Major	Minor	MajorFrequency	MajorFrequencyWinter	AbsoluteDifference	N	NWinter
+NC_037112.1	28356528	AAAAACACCT	A	0.956044	0	0.956044	182	22
+
+Now:
+Chromosome	Position	Major	Minor	MajorFrequency	MajorFrequencyWinter	AbsoluteDifference	N	NWinter 
+NC_037112.1	28356528	AAAAACACCTAAAAC	AAAAAC	0.964286	0.375	0.589286	56	8
+
+### Adapter contaminants
+
+gunzip -c ldi_B_8_R1.fastq.gz | grep "TACACTCTTTCCCTACACGACGCTCTTCCGATCT"
+TTACAGCTTCCTGTACACCGCTCCATCTCTGTCTGTACACTCTTTCCCTACACGACGCTCTTCCGATCTTTATTCATTCACATGGTCATGGGGGGGGGCTGGTGGGGGGGGTTATTATTGGGGGGGGGCGGGAGGGTTATGGTTTGGTGG
+
+One hit!   
+(base) maccamp@farm:~/data/delta-smelt-omics/demulti-SOMM515$ gunzip -c ldi_B_8_R1.fastq.gz | grep "GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT"
+
+no hits!    
+
+(base) maccamp@farm:~/data/delta-smelt-omics/demulti-SOMM515$ gunzip -c Ldi_A_7_R1.fastq.gz | grep "TACACTCTTTCCCTACACGACGCTCTTCCGATCT"
+CAGAGAGAGACTGGATCTATGAGTCTCTCTACACTCTTTCCCTACACGACGCTCTTCCGATCTTTTTGAATAACAATGTGCCATCTTAGACTGTTTGGGGGGGTTATGCCAATGTTACAGAAGATGGCACAGTGTTATTAAAAAAGATCGG    
+One hit!   
