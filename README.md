@@ -1,7 +1,25 @@
 # shernook
-Chinook WGS for SHERLOCK assays
+Chinook WGS for SHERLOCK assays   
+ 
+### General Plan
 
-# Color Scheme
+__1__  Align short read data to the reference genome (GCF_002872995.1_Otsh_v1.0) with bwa mem     
+__2__  Sort short read alignments and remove PCR duplicates with samtools     
+__3__  Realign indels with GATK "Indel Realigner"   
+__4__  Identify run associated genetic variation with ANGSD doAsso     
+__5__  Create a VCF that defintiely includes indels to find absolute allele frequency differences
+__6__  Create some absolute frequency difference measurements of all variants around SNPs after imputation
+
+### Scripts should generally follow the plan and are numbered consecutively
+
+100-align-and-sort.sh       
+101-indel-realignment.sh - looks like the tool has changed.      
+102-compute-coverage.sh     
+
+etc.
+
+
+#### Color Scheme
 Winter&Spring=purple AA3377      
 
 Fall&LateFall=yellow CCBB44      
@@ -14,25 +32,10 @@ Fall-red EE6677
 
 LateFall-grey BBBBBB     
 
- 
-### General Plan
-
-__1__  Align short read data to the reference genome (GCF_002872995.1_Otsh_v1.0) with bwa mem     
-__2__  Sort short read alignments and remove PCR duplicates with samtools     
-__3__  Realign indels with GATK "Indel Realigner"   
-__4__  Identify run associated genetic variation with ANGSD doAsso     
-__5__  Create a VCF that defintiely includes indels to find absolute allele frequency differences
-__6__  Create some absolute frequency difference measurements of all variants around SNPs identified by ANGSD     
-
-### Tester
-I'm going to get some Chinook WGS data. There are some samples available on SRA from AK, SRX733554: Oncorhynchus tshawytscha Genome sequencing SRR1613247 & SRR1613242.     
-
-`wget --recursive --no-parent --execute robots=off --no-host-directories ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR161/002/SRR1613242/`    
-
-`wget --recursive --no-parent --execute robots=off --no-host-directories ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR161/007/SRR1613247/`     
 
 ### Thompson, Anderson et al. data    
-maccamp@farm:~/data/chinook-wgs-raw$ wget 'http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&rettype=runinfo&db=sra&term=PRJNA667732' -O - | tee SraRunInfo.csv
+
+`maccamp@farm:~/data/chinook-wgs-raw$ wget 'http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&rettype=runinfo&db=sra&term=PRJNA667732' -O - | tee SraRunInfo.csv`
 
 Locations of files:
 https://sra-download.ncbi.nlm.nih.gov/traces/sra67/SRR/012498/SRR12798274
@@ -41,7 +44,7 @@ https://sra-download.ncbi.nlm.nih.gov/traces/sra37/SRR/012498/SRR12798433
 
 Field 10 of SraRunInfo.csv
 
-maccamp@farm:~/data/chinook-wgs-raw$ cut -f 10 -d ',' SraRunInfo.csv | while read line; do wget $line; done;
+`maccamp@farm:~/data/chinook-wgs-raw$ cut -f 10 -d ',' SraRunInfo.csv | while read line; do wget $line; done;`
 
 SraRunInfo.csv in /meta/ now.     
 
@@ -68,10 +71,3 @@ do
 
 done < $list
  ----
-### Scripts should generally follow the plan in term of numbering.
-
-100-align-and-sort.sh       
-101-indel-realignment.sh - looks like the tool has changed.      
-102-compute-coverage.sh     
-
-etc.
