@@ -55,10 +55,10 @@ srun -p high -t 24:00:00 fastq-dump --outdir ./ --gzip --skip-technical --read-f
 Need to speed this all up...
 
 
-----Bash Script
+In BASH    
+
 list=$1 
 
-#Say we are reading in something tab delimited.
 IFS=$'\t'
 
 while read name
@@ -70,4 +70,4 @@ do
   sbatch -p high -t 2-0:00:00 --mem=8G $name.sh
 
 done < $list
- ----
+
