@@ -1,0 +1,417 @@
+---
+title: "301.2-winter-spring"
+author: "Mac Campbell"
+date: "11/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(data.table)
+
+```
+
+## Winter-Spring Association
+Which genomic regions are highlighted here?
+
+```{r}
+
+readIn <- function(file) {
+  data<-read_tsv(file)
+  data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
+  filter(log10p > 5) %>% filter(log10p!="Inf")
+  outliers <- data %>% filter(log10p >=10)
+
+  name<-gsub("lrt0.gz","pdf",file)
+  chrom<-unique(data$Chromosome)
+  
+ggplot(data) + geom_point(aes(x=Position, y=log10p), color="grey50", alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Position, y=log10p), color="black", cex=0.5, alpha=0.9) +
+  geom_hline(yintercept = 5, alpha=0.6) +
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  geom_hline(yintercept = 10, lty=2, alpha=0.6) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  scale_color_manual(values=mycolors) +
+  ylab("-log10(p)") +
+  xlab(chrom) +
+  ggtitle("Spring vs Winter - Combined Data") +
+  theme(plot.title = element_text(hjust=0.5) )
+
+
+ggsave(name)
+
+return(data)
+}
+
+```
+
+```{r}
+files<-list.files(path="outputs/301", pattern="*.lrt0.gz", full.names=TRUE)
+#files=c("outputs/301/NC_037097.1-asso.lrt0.gz","outputs/301/NC_037098.1-asso.lrt0.gz")
+
+list<-lapply(files, readIn)
+
+```
+
+Which chroms do we want to look at?     
+```{r}
+comb<-as_tibble(rbindlist(list, fill=T))
+
+venti<-filter(comb, log10p>20)
+quince<-filter(comb, log10p>15) %>% filter(Chromosome %in% venti$Chromosome)
+```
+
+```{r}
+ggplot() +
+  geom_point(data=quince, aes(x=Position, y=log10p), alpha=0.5, color="grey50") +
+  geom_point(data=venti, aes(x=Position, y=log10p)) +
+  facet_wrap(.~Chromosome, scales = "free_x") +
+  theme_bw()
+
+ggsave("outputs/301/winter-spring-top-asso.jpeg")
+```
+
+As previously implicated, NC_037112.1 has some strong signal, as do NC_037103.1 and NC37109.1. NC_037112.1 has two peaks it looks like.
+
+```{r}
+chrom<-comb %>% filter(Chromosome=="NC_037112.1")
+range<-venti %>% filter(Chromosome=="NC_037112.1") 
+points<-quince %>% filter(Chromosome=="NC_037112.1") 
+b1<-24607056-50000
+b2<-25090371+50000
+
+b3<-28120772-50000
+b4<-28449468+50000
+
+points1 <- filter(points, Position > b1) %>% filter(Position < b2) %>% mutate(Peak="Peak1")
+points2 <- filter(points, Position > b3) %>% filter(Position < b4) %>% mutate(Peak="Peak2")
+
+ggplot(chrom) +
+  geom_point(aes(x=Position, y=log10p), color="grey50", alpha=0.5) +
+  geom_point(data=points1, aes(x=Position, y=log10p)) +
+  geom_point(data=points2, aes(x=Position, y=log10p)) +
+  ggtitle("Winter-Spring NC_037112.1 Biggest Peaks") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust=0.5) )
+
+
+```
+
+### Genotype calling
+I can call and perhaps impute around:
+```{r}
+b1
+b2
+b3
+b4
+```
+
+```{sh,eval=FALSE}
+#Calling all variants (~7,000 each)
+
+srun -p med -t 8:00:00 --nodes=1 bcftools mpileup --min-BQ 20 --min-MQ 20 -Ou --fasta-ref ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -r NC_037112.1:24557056-25140371 -b bamlists/bamlist156-winter-spring.bamlist | \
+bcftools call -mv -Ov -o outputs/301/bamlist156-chrom16-p1.vcf > outputs/301/part1.out 2> outputs/301/part1.err &
+
+srun -p med -t 8:00:00 --nodes=1 bcftools mpileup --min-BQ 20 --min-MQ 20 -Ou --fasta-ref ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -r NC_037112.1:28070772-28499468 -b bamlists/bamlist156-winter-spring.bamlist | \
+bcftools call -mv -Ov -o outputs/301/bamlist156-chrom16-p2.vcf > outputs/301/part2.out 2> outputs/301/part2.err &
+
+#Normalizing
+#bgzip and bcftools index files, then
+srun -p med -t 8:00:00 --nodes=1 bcftools norm -c w outputs/301/bamlist156-chrom16-p1.vcf.gz -f ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -Ov -o outputs/301/bamlist156-chrom16-p1-norm.vcf 
+
+srun -p med -t 8:00:00 --nodes=1 bcftools norm -c w outputs/301/bamlist156-chrom16-p2.vcf.gz -f ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -Ov -o outputs/301/bamlist156-chrom16-p2-norm.vcf 
+
+#Filter to only indels
+bcftools view -V snps bamlist156-chrom16-p1-norm.vcf > bamlist156-p1-indels.vcf
+bcftools view -V snps bamlist156-chrom16-p2-norm.vcf > bamlist156-p2-indels.vcf
+
+```
+
+###Imputation version
+
+Filtering options:
+__1__ biallelic
+__2__ Genotype call in the vcf for more then 40% of the individuals.  
+__3__ Minor allele freq > 0.05  
+
+```{sh, eval=FALSE}
+vcftools --gzvcf outputs/301/bamlist156-chrom16-p1.vcf.gz --min-alleles 2 --max-alleles 2 --max-missing 0.4 --maf 0.05 --out outputs/301/bamlist156-chrom16-p1-filtered --recode 
+
+vcftools --gzvcf outputs/301/bamlist156-chrom16-p2.vcf.gz --min-alleles 2 --max-alleles 2 --max-missing 0.4 --maf 0.05 --out outputs/301/bamlist156-chrom16-p2-filtered --recode 
+```
+Leaves 2097, 2675 sites
+(Maybe I should split into winter here and try it out)
+
+
+Imputing/phasing
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.18May20.d20.jar gt=outputs/301/bamlist156-chrom16-p1-filtered.recode.vcf  out=outputs/301/beagle-bamlist156-chrom16-p1-filtered 
+
+java -jar ~/bin/beagle.18May20.d20.jar gt=outputs/301/bamlist156-chrom16-p2-filtered.recode.vcf  out=outputs/301/beagle-bamlist156-chrom16-p2-filtered 
+```
+
+Now to calc again...
+```{sh, eval=FALSE}
+#Filter to only indels
+bcftools view -V snps beagle-bamlist156-chrom16-p1-filtered.vcf.gz > bamlist156-p1-indels.vcf
+bcftools view -V snps beagle-bamlist156-chrom16-p2-filtered.vcf.gz  > bamlist156-p2-indels.vcf
+```
+
+```{sh, eval=FALSE}
+
+bcftools view -S meta/bamlist156-winter-curated.txt outputs/301/bamlist156-p1-indels.vcf > outputs/301/winter-1.vcf
+
+bcftools view -S meta/bamlist156-spring-curated.txt outputs/301/bamlist156-p1-indels.vcf > outputs/301/spring-1.vcf
+
+bcftools view -S meta/bamlist156-winter-curated.txt outputs/301/bamlist156-p2-indels.vcf > outputs/301/winter-2.vcf
+
+bcftools view -S meta/bamlist156-spring-curated.txt outputs/301/bamlist156-p2-indels.vcf > outputs/301/spring-2.vcf
+
+```
+
+```{sh, eval=FALSE}
+vcftools --vcf winter-1.vcf --freq --out winter1
+vcftools --vcf spring-1.vcf --freq --out spring1 
+vcftools --vcf winter-2.vcf --freq --out winter2
+vcftools --vcf spring-2.vcf --freq --out spring2
+
+```
+
+
+Looking at the absolute frequency differences:
+```{r}
+freq1<-read_tsv("outputs/301/winter1.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAllelesWinter=X3, NWinter=X4, Major=X5, Minor=X6) %>%
+  separate(Major, into=c("Major","MajorFrequencyWinter"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequencyWinter"), sep=":")
+freq1$MajorFrequencyWinter<-as.numeric(freq1$MajorFrequencyWinter)
+freq1$MinorFrequencyWinter<-as.numeric(freq1$MinorFrequencyWinter)
+
+freq2<-read_tsv("outputs/301/spring1.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAlleles=X3, N=X4, Major=X5, Minor=X6)%>%
+  separate(Major, into=c("Major","MajorFrequency"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequency"), sep=":")
+freq2$MajorFrequency<-as.numeric(freq2$MajorFrequency)
+freq2$MinorFrequency<-as.numeric(freq2$MinorFrequency)
+
+comb<-left_join(freq2, freq1)
+```
+
+```{r}
+merge<-comb %>% mutate(AbsoluteDifference=abs(MajorFrequencyWinter-MajorFrequency)) %>% 
+  select(Chromosome, Position, Major, Minor, MajorFrequency, MajorFrequencyWinter, AbsoluteDifference, N, NWinter) %>% 
+  filter(N > 30, NWinter > 20) %>% arrange(-AbsoluteDifference)
+
+write_csv(head(merge, 20),"outputs/301/top-indels-p1.csv")
+
+merge
+```
+
+```{r}
+freq1<-read_tsv("outputs/301/winter2.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAllelesWinter=X3, NWinter=X4, Major=X5, Minor=X6) %>%
+  separate(Major, into=c("Major","MajorFrequencyWinter"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequencyWinter"), sep=":")
+freq1$MajorFrequencyWinter<-as.numeric(freq1$MajorFrequencyWinter)
+freq1$MinorFrequencyWinter<-as.numeric(freq1$MinorFrequencyWinter)
+
+freq2<-read_tsv("outputs/301/spring2.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAlleles=X3, N=X4, Major=X5, Minor=X6)%>%
+  separate(Major, into=c("Major","MajorFrequency"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequency"), sep=":")
+freq2$MajorFrequency<-as.numeric(freq2$MajorFrequency)
+freq2$MinorFrequency<-as.numeric(freq2$MinorFrequency)
+
+comb<-left_join(freq2, freq1)
+```
+
+```{r}
+merge<-comb %>% mutate(AbsoluteDifference=abs(MajorFrequencyWinter-MajorFrequency)) %>% 
+  select(Chromosome, Position, Major, Minor, MajorFrequency, MajorFrequencyWinter, AbsoluteDifference, N, NWinter) %>% 
+  filter(N > 30, NWinter > 20) %>% arrange(-AbsoluteDifference)
+
+write_csv(head(merge, 20),"outputs/301/top-indels-p2.csv")
+
+merge
+```
+
+###Imputing separate populations:
+Imputing/phasing
+```{sh, eval=FALSE}
+
+bcftools view -S meta/bamlist156-winter-curated.txt outputs/301/bamlist156-chrom16-p1-filtered.recode.vcf > outputs/301/winter-1.vcf
+
+bcftools view -S meta/bamlist156-spring-curated.txt outputs/301/bamlist156-chrom16-p1-filtered.recode.vcf > outputs/301/spring-1.vcf
+
+bcftools view -S meta/bamlist156-winter-curated.txt outputs/301/bamlist156-chrom16-p2-filtered.recode.vcf > outputs/301/winter-2.vcf
+
+bcftools view -S meta/bamlist156-spring-curated.txt outputs/301/bamlist156-chrom16-p2-filtered.recode.vcf > outputs/301/spring-2.vcf
+
+java -jar ~/bin/beagle.18May20.d20.jar gt=outputs/301/winter-1.vcf out=outputs/301/beagle-winter-1
+java -jar ~/bin/beagle.18May20.d20.jar gt=outputs/301/spring-1.vcf out=outputs/301/beagle-spring-1
+java -jar ~/bin/beagle.18May20.d20.jar gt=outputs/301/winter-2.vcf out=outputs/301/beagle-winter-2
+java -jar ~/bin/beagle.18May20.d20.jar gt=outputs/301/spring-2.vcf out=outputs/301/beagle-spring-2
+
+#get only indels....
+vcftools --gzvcf beagle-winter-1.vcf.gz --keep-only-indels --freq --out beagle-winter1
+vcftools --gzvcf beagle-spring-1.vcf.gz --keep-only-indels --freq --out beagle-spring1 
+vcftools --gzvcf beagle-winter-2.vcf.gz --keep-only-indels --freq --out beagle-winter2
+vcftools --gzvcf beagle-spring-2.vcf.gz --keep-only-indels --freq --out beagle-spring2
+
+```
+
+Looking at the absolute frequency differences:
+```{r}
+freq1<-read_tsv("outputs/301/beagle-winter1.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAllelesWinter=X3, NWinter=X4, Major=X5, Minor=X6) %>%
+  separate(Major, into=c("Major","MajorFrequencyWinter"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequencyWinter"), sep=":")
+freq1$MajorFrequencyWinter<-as.numeric(freq1$MajorFrequencyWinter)
+freq1$MinorFrequencyWinter<-as.numeric(freq1$MinorFrequencyWinter)
+
+freq2<-read_tsv("outputs/301/beagle-spring1.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAlleles=X3, N=X4, Major=X5, Minor=X6)%>%
+  separate(Major, into=c("Major","MajorFrequency"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequency"), sep=":")
+freq2$MajorFrequency<-as.numeric(freq2$MajorFrequency)
+freq2$MinorFrequency<-as.numeric(freq2$MinorFrequency)
+
+comb<-left_join(freq2, freq1)
+```
+
+```{r}
+merge<-comb %>% mutate(AbsoluteDifference=abs(MajorFrequencyWinter-MajorFrequency)) %>% 
+  select(Chromosome, Position, Major, Minor, MajorFrequency, MinorFrequency, MajorFrequencyWinter, MinorFrequencyWinter, AbsoluteDifference, N, NWinter) %>% 
+  filter(N > 30, NWinter > 20) %>% arrange(-AbsoluteDifference)
+
+write_csv(merge,"outputs/301/beagle-top-indels-p1.csv")
+
+merge
+```
+
+Looking at the absolute frequency differences:
+```{r}
+freq1<-read_tsv("outputs/301/beagle-winter2.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAllelesWinter=X3, NWinter=X4, Major=X5, Minor=X6) %>%
+  separate(Major, into=c("Major","MajorFrequencyWinter"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequencyWinter"), sep=":")
+freq1$MajorFrequencyWinter<-as.numeric(freq1$MajorFrequencyWinter)
+freq1$MinorFrequencyWinter<-as.numeric(freq1$MinorFrequencyWinter)
+
+freq2<-read_tsv("outputs/301/beagle-spring2.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAlleles=X3, N=X4, Major=X5, Minor=X6)%>%
+  separate(Major, into=c("Major","MajorFrequency"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequency"), sep=":")
+freq2$MajorFrequency<-as.numeric(freq2$MajorFrequency)
+freq2$MinorFrequency<-as.numeric(freq2$MinorFrequency)
+
+comb<-left_join(freq2, freq1)
+```
+
+```{r}
+merge<-comb %>% mutate(AbsoluteDifference=abs(MajorFrequencyWinter-MajorFrequency)) %>% 
+  select(Chromosome, Position, Major, Minor, MajorFrequency, MinorFrequency, MajorFrequencyWinter, MinorFrequencyWinter, AbsoluteDifference, N, NWinter) %>% 
+  filter(N > 30, NWinter > 20) %>% arrange(-AbsoluteDifference)
+
+write_csv(merge,"outputs/301/beagle-top-indels-p2.csv")
+
+merge
+```
+
+
+## What's the difference bt the two types of winter samples??
+
+```{sh, eval=FALSE}
+
+bcftools view -S meta/bamlist156-winter-baerwald.txt outputs/301/winter-2.vcf > outputs/301/winter-2-baerwald.vcf
+
+bcftools view -S meta/bamlist156-winter-existing.txt outputs/301/winter-2.vcf > outputs/301/winter-2-existing.vcf
+
+java -jar ~/bin/beagle.18May20.d20.jar gt=outputs/301/winter-2-baerwald.vcf out=outputs/301/beagle-winter-2-baerwald
+
+java -jar ~/bin/beagle.18May20.d20.jar gt=outputs/301/winter-2-existing.vcf out=outputs/301/beagle-winter-2-existing
+
+#get only indels....
+vcftools --gzvcf beagle-winter-2-existing.vcf.gz --keep-only-indels --freq --out beagle-winter-2-existing
+vcftools --gzvcf beagle-winter-2-baerwald.vcf.gz --keep-only-indels --freq --out beagle-winter-2-baerwald
+
+#461 sites in each file.
+```
+
+
+Looking at the absolute frequency differences:
+```{r}
+freq1<-read_tsv("outputs/301/beagle-winter-2-baerwald.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAllelesWinter=X3, NWinter=X4, Major=X5, Minor=X6) %>%
+  separate(Major, into=c("Major","MajorFrequencyWinter"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequencyWinter"), sep=":")
+freq1$MajorFrequencyWinter<-as.numeric(freq1$MajorFrequencyWinter)
+freq1$MinorFrequencyWinter<-as.numeric(freq1$MinorFrequencyWinter)
+
+freq2<-read_tsv("outputs/301/beagle-winter-2-existing.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAlleles=X3, N=X4, Major=X5, Minor=X6)%>%
+  separate(Major, into=c("Major","MajorFrequency"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequency"), sep=":")
+freq2$MajorFrequency<-as.numeric(freq2$MajorFrequency)
+freq2$MinorFrequency<-as.numeric(freq2$MinorFrequency)
+
+comb2<-left_join(freq2, freq1)
+
+
+merge2<-comb2 %>% mutate(AbsoluteDifference=abs(MajorFrequencyWinter-MajorFrequency)) %>% 
+  select(Chromosome, Position, Major, Minor, MajorFrequency, MinorFrequency, MajorFrequencyWinter, MinorFrequencyWinter, AbsoluteDifference, N, NWinter) %>% 
+  filter(N > 10, NWinter > 10) %>% arrange(AbsoluteDifference)
+
+write_csv(merge2,"outputs/301/beagle-p2-winter-comparison.csv")
+
+merge2
+```
+
+
+Ok, new idea. Let's make a "haplotype raster" for Spring vs. Winter across these two peaks and see what that's about!  If I can make a calculation of S v W haplotypes, then that should inform our expected maximum absolute difference!!    
+
+Basic math: I have  a major allele frequency of 0.2.
+p2+2pq+q2= 
+```{r}
+.2^2
+.2*.8*2
+.8^2
+```
+
+This would suggest 32% of our fish are heterozygous for this thingy.
+Conversely:
+```{r}
+.9^2
+.9*.1*2
+.1^2
+```
+Spring run would have 18% heterozygous inds.
+
+Looking at a haplotype raster, I have two hets in spring run.
+```{r}
+38/44
+6/44
+
+(122-9)/122
+9/122
+
+##Expected maximum frequency difference
+((122-9)/122)-6/44
+```
+
+#Our highest LRT
+NC_037112.1	24721202	G	A	0.338369	98.727916      
+NC_037112.1	24721181	G	C	0.327867	101.113488     
+
+What's our frequency in winter for these baddies?
+`NC_037112.1	24721181	.	G	C	.	PASS	.	GT	1|0	1|1	1|1	0|1	1|0	1|0	1|1	1|1	1|1	1|0	1|0	1|0	0|1	0|1	1|0	1|0	1|0	1|0	1|1	1|1	0|0	1|1`
+`NC_037112.1	24721181	.	G	C	.	PASS	.	GT	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0`
+
+NC_037112.1	28279147	.	C	T	.	PASS	.	GT	1|1	1|1	1|1	1|1	1|1	1|1	1|1	1|0	1|1	1|0	1|1	1|1	1|0	1|1	1|1	1|1	0|1	1|1	1|1	1|1	1|1	1|1
+
+At the second peak:
+`NC_037112.1	28279147	.	C	T	.	PASS	.	GT	1|1	1|1	1|1	1|1	1|1	1|1	1|1	1|0	1|1	1|0	1|1	1|1	1|0	1|1	1|1	1|1	0|1	1|1	1|1	1|1	1|1	1|1`
+`NC_037112.1	28279147	.	C	T	.	PASS	.	GT	0|0	1|1	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|1	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|1	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0	0|0`
+
+```{r}
+29/44
+0/0
+```

@@ -1,0 +1,191 @@
+---
+title: "700-early-late-figures"
+author: "Mac Campbell"
+date: "January 12, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+
+```{r}
+library(tidyverse)
+library(RColorBrewer)
+```
+
+Need to produce some figures for a paper.
+
+__1__ Association testing
+__2__ Haplo-raster of interesting bit?
+
+### Association Testing
+I do need to generate per chrom analyses of Early-Late, in outputs/300
+```{sh, eval=FALSE}
+bash $HOME/shernook/202-do-asso.sh $HOME/shernook/bamlists/bamlist156.bamlist $HOME/shernook/meta/GCF_002872995.1.chroms-less-test.chroms $HOME/shernook/bamlists/bamlist156-early-late.pheno
+```
+ 
+Spring/winter, in outputs/301
+```{sh, eval=FALSE}
+maccamp@farm:~/shernook/outputs/301$ for f in NC*lrt0.gz; do gunzip -c $f | grep -v "Chromosome" | awk '($6 > 2)' >> spring-winter.lrt0; done;
+maccamp@farm:~/shernook/outputs/301$ gzip spring-winter.lrt0 
+```
+Filtering out lrt <=2 reduced file from 162 MB to 65 MB, but, let's focus on the main chromosomes
+```{r}
+d1 <-  read_tsv("outputs/300/NC_037097.1-asso.lrt0.gz")
+d16 <- read_tsv("outputs/300/NC_037112.1-asso.lrt0.gz")
+d28 <- read_tsv("outputs/300/NC_037124.1-asso.lrt0.gz")
+
+data<-bind_rows(d1,d16,d28) 
+
+data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
+  filter(log10p > 1) %>% filter(log10p!="Inf")
+
+data %>% arrange(-log10p) %>% head()
+
+```
+
+```{r}
+dd <- data %>% mutate(Index=1:n())
+
+chroms<-dd %>% group_by(Chromosome) %>% mutate(Start=min(Index), Stop=max(Index)) %>% 
+  select(Chromosome,Start,Stop) %>% unique() %>% 
+  mutate(Position=round((Start+Stop)/2))
+
+outliers <- dd %>% filter(log10p >=10)
+#Make enough colors
+nb.cols <- nrow(chroms)
+mycolors <- colorRampPalette(brewer.pal(8, "Set1"))(nb.cols)
+
+
+plot1<-ggplot(dd) +
+  geom_point(data=dd, aes(x=Index, y=log10p, color=Chromosome), alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Index, y=log10p), color="black", cex=0.5, alpha=0.9) +
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  geom_hline(yintercept = 10, lty=2, alpha=0.6) +
+  theme_bw() +
+  scale_x_continuous(breaks=chroms$Position, labels=chroms$Chromosome) +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  scale_color_manual(values=mycolors) +
+  ylab("-log10(p)") +
+  xlab("Chromosome") +
+  ggtitle("Early - Late Comparison") +
+  theme(plot.title = element_text(hjust=0.5, face="bold", size=18) ) +
+  theme(axis.text = element_text(size=12)) +
+  theme(axis.title = element_text(size=14, face ="bold"))
+```
+
+
+```{r, eval=FALSE}
+plot1
+ggsave("outputs/700/association-early-late.jpeg",
+       width=8, height = 5)
+```
+#### Set up for facet grid
+```{r}
+earlylate<-dd %>% mutate(Comparison="Early - Late")
+```
+
+## Spring-Winter
+```{r}
+d1 <-  read_tsv("outputs/301/NC_037097.1-asso.lrt0.gz")
+d16 <- read_tsv("outputs/301/NC_037112.1-asso.lrt0.gz")
+d28 <- read_tsv("outputs/301/NC_037124.1-asso.lrt0.gz")
+
+data<-bind_rows(d1,d16,d28) 
+
+data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
+  filter(log10p > 1) %>% filter(log10p!="Inf")
+
+data %>% arrange(-log10p) %>% head()
+
+```
+
+```{r}
+dd <- data %>% mutate(Index=1:n())
+
+chroms<-dd %>% group_by(Chromosome) %>% mutate(Start=min(Index), Stop=max(Index)) %>% 
+  select(Chromosome,Start,Stop) %>% unique() %>% 
+  mutate(Position=round((Start+Stop)/2))
+
+outliers <- dd %>% filter(log10p >=10)
+#Make enough colors
+nb.cols <- nrow(chroms)
+mycolors <- colorRampPalette(brewer.pal(8, "Set1"))(nb.cols)
+
+
+plot1<-ggplot(dd) +
+  geom_point(data=dd, aes(x=Index, y=log10p, color=Chromosome), alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Index, y=log10p), color="black", cex=0.5, alpha=0.9) +
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  geom_hline(yintercept = 10, lty=2, alpha=0.6) +
+  theme_bw() +
+  scale_x_continuous(breaks=chroms$Position, labels=chroms$Chromosome) +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  scale_color_manual(values=mycolors) +
+  ylab("-log10(p)") +
+  xlab("Chromosome") +
+  ggtitle("Spring - Winter Comparison") +
+  theme(plot.title = element_text(hjust=0.5, face="bold", size=18) ) +
+  theme(axis.text = element_text(size=12)) +
+  theme(axis.title = element_text(size=14, face ="bold"))
+
+
+#### Set up for facet grid
+
+springwinter<-dd %>% mutate(Comparison="Spring - Winter")
+
+```
+
+
+```{r, eval=FALSE}
+plot1
+ggsave("outputs/700/association-spring-winter.jpeg",
+       width=8, height = 5)
+```
+
+
+
+#Combine
+```{r}
+df<-bind_rows(earlylate, springwinter)
+```
+
+
+```{r}
+df$Comparison<-factor(df$Comparison, levels =c("Early - Late", "Spring - Winter"))
+outliers <- df %>% filter(log10p >=10)
+
+plot<-ggplot(df) +
+  geom_point(data=df, aes(x=Position, y=log10p, color=Chromosome), alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Position, y=log10p), color="black", cex=0.5, alpha=0.9) +
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  geom_hline(yintercept = 10, lty=2, alpha=0.6) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  scale_color_manual(values=mycolors) +
+  ylab("-log10(p)") +
+  xlab("Chromosome") +
+  ggtitle("Association Testing") +
+  theme(plot.title = element_text(hjust=0.5, face="bold", size=18) ) +
+  theme(axis.text = element_text(size=12)) +
+  theme(axis.title = element_text(size=14, face ="bold")) +
+  facet_grid(Comparison~Chromosome, scales="free")
+```
+
+
+```{r}
+plot
+ggsave("outputs/700/association.jpeg",
+       width=8, height = 5)
+```

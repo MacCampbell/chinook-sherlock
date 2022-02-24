@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ```
 
-Updating on 10/28/2020 with all 96 samples.
+Updating on 10/28/2020 with the 96 new samples to examine sequence quality/signal.
 
 ```{r}
 library(tidyverse)
@@ -28,7 +28,6 @@ meta<-left_join(meta,seqs)
 
 meta <- meta %>% mutate(Bam = paste0("/home/maccamp/shernook/bams/",SeqFile,".bam"))
 
-save(meta, file="meta/meta.rda")
 ```
 
 Distribution
@@ -64,6 +63,9 @@ ggplot(df) +
   ylab("Count") +
   theme(axis.title = element_text(face="bold")) +
   scale_y_continuous(breaks=c(0,5,10,15))
+
+newmeta<-df
+save(newmeta, file="meta/new-seq-meta.rda")
 ```
 
 ## Remove low ballers

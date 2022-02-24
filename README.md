@@ -43,6 +43,8 @@ Field 10 of SraRunInfo.csv
 
 maccamp@farm:~/data/chinook-wgs-raw$ cut -f 10 -d ',' SraRunInfo.csv | while read line; do wget $line; done;
 
+SraRunInfo.csv in /meta/ now.     
+
 Now we need to dump.
 
 Working comand:     
@@ -72,40 +74,4 @@ done < $list
 101-indel-realignment.sh - looks like the tool has changed.      
 102-compute-coverage.sh     
 
-
-### Short workup notes
-While waiting for all the mapping to complete, I ran a "first-batch.txt" set through.
-It has 80 samples. I'm creating a new subdir "filter-sorted" to work in with symlinks to try not to screw everything up.
-`maccamp@farm:~/shernook/filter-sorted$ ls | grep -v bai | perl -pe 's/.sort.flt.bam//g' > first-batch.txt`    
-`maccamp@farm:~/shernook/filter-sorted$ ../101-indel-realignment.sh first-batch.txt  $HOME/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna`     
-Seems to work.
-
-Also a couple files were very large and the clock time was not specified right. So I have to rerun 
-W011924USR_41_S70_L004_R1_001
-F080016TOU_2_S63_L004_R1_001
-Increased run time to 10 days here.
-
-`maccamp@farm:~/shernook/data$ bash ../100-align-and-sort.sh batch1-redo.txt $HOME/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna.gz`
-
-In filter sorted, I'm am re-analyzing "second-batch.txt to include the winter fish we have that finished mapping.
-`maccamp@farm:~/shernook/filter-sorted$ ls | grep sort.flt.bam | grep -v bai |  perl -pe 's/.sort.flt.bam//g' > second-batch.txt`
-
-We are now up to 90 samples.
-`maccamp@farm:~/shernook/filter-sorted$ ../101-indel-realignment.sh second-batch.txt $HOME/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna`     
-`maccamp@farm:~/shernook/filter-sorted$ bash ../102-compute-coverage.sh second-batch.txt ../meta/GCF_002872995.1.bed`
-
-
-Now all samples have completed mapping. To include the final six samples:    
-F080016TOU_2_S63_L004_R1_001 
-F010240MER_19_S61_L004_R1_001
-S980004YUB_43_S99_L004_R1_001
-S990001YUB_43_S54_L004_R1_001
-S020035MIL_43_S51_L004_R1_001
-W011924USR_41_S70_L004_R1_001
-
-`../101-indel-realignment.sh third-batch.txt $HOME/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna`   
-` bash ../102-compute-coverage.sh third-batch.txt ../meta/GCF_002872995.1.bed`
-
-## How about those Thompson et al. seqs?
-I'm trying first an analysis of the existing *.bams.    
-We don't need the Klamath fish I suppose.
+etc.

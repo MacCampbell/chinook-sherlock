@@ -1,0 +1,207 @@
+---
+title: "301.3-haplo-raster.Rmd"
+author: "Mac Campbell"
+date: "11/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(knitr)
+#> install_github("eriqande/ecaRbioinf")
+library(ecaRbioinf)
+library(vcfR)
+```
+## Haplo-Raster
+I can make a haplo raster by:     
+1. Imputation     
+
+First I filtered the sites:    
+Filtering options:
+__1__ biallelic
+__2__ Genotype call in the vcf for more then 40% of the individuals.  
+__3__ Minor allele freq > 0.05  
+
+```{sh, eval=FALSE}
+vcftools --gzvcf outputs/301/bamlist156-chrom16-p1.vcf.gz --min-alleles 2 --max-alleles 2 --max-missing 0.4 --maf 0.05 --out outputs/301/bamlist156-chrom16-p1-filtered --recode 
+
+vcftools --gzvcf outputs/301/bamlist156-chrom16-p2.vcf.gz --min-alleles 2 --max-alleles 2 --max-missing 0.4 --maf 0.05 --out outputs/301/bamlist156-chrom16-p2-filtered --recode 
+```
+
+Ohh arggh. Beagle 5.1 not only doesn't work with GLs, it doesn't do ibd segments!!!    
+Using 4.1    
+
+Taking a step back, I want to rename these something more sensible....
+```{r}
+load("meta/tot.rda")
+ws<-read_tsv("bamlists/bamlist156-winter-spring.bamlist", col_names = "Bam")
+
+ws<-left_join(ws, tot)
+
+newnames<-ws %>% select(Run, Tributary, `Sample ID`) %>% mutate(ID=paste(Run, Tributary, `Sample ID`, sep="-")) %>% select(ID)
+
+write_tsv(newnames, "outputs/301/newnames", col_names = FALSE)
+
+```
+
+Recoding names
+```{sh}
+bcftools reheader --samples outputs/301/newnames -o outputs/301/bamlist156-chrom16-p2-filtered.recode.renamed.vcf outputs/301/bamlist156-chrom16-p2-filtered.recode.vcf
+```
+
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.27Jan18.7e1.jar gl=outputs/301/bamlist156-chrom16-p2-filtered.recode.renamed.vcf out=outputs/301/beagle-imputed-p2 > outputs/301/beagle-impute-stdout.txt 
+```
+
+What does the output look like? A VCF, with 2675 variant sites.     
+
+2. Phasing    
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.27Jan18.7e1.jar gt=outputs/301/beagle-imputed-p2.vcf.gz out=outputs/301/beagle-imp-phased-p2 ibd=true ibdcm=0.05 > outputs/301/beagle-phase-stdout.txt 
+```
+
+3. Copying code from Eric A.    
+
+```{r}
+ibd <- read_tsv("outputs/301/beagle-imp-phased-p2.ibd.gz",
+         col_names = c("samp1", "hap1", "samp2", "hap2", "chrom", "start", "end", "LOD")) %>%
+  arrange(start, end)  %>%
+  separate(samp1, into = c("Run1","pop1", "id1"), sep = "-", remove = FALSE) %>%
+  separate(samp2, into = c("Run2","pop2", "id2"), sep = "-", remove = FALSE)
+
+```
+
+
+
+Read in the data:
+```{r}
+interm_dir<-c("outputs/301")
+V <- file.path(interm_dir, "beagle-imp-phased-p2.vcf.gz")
+haps <- ecaRbioinf::vcf_haplos2tidy(V)
+```
+
+First, straighten out the haplotype names.
+```{r}
+big_haps <- haps$tidy %>%
+  filter(Indiv != "Coho") %>%
+ # left_join(haps$avd, by = c("ChromKey", "POS", "Indiv", "haplo")) %>% 
+  mutate(haplo_name = paste0(Indiv, "-", haplo))
+```
+
+Adding in data (Mac's take)
+```{r}
+big_haps<-big_haps %>% separate(Indiv, into = c("Ecotype","Population", "ID"), sep = "-", remove = FALSE)
+```
+
+
+### Color by the allele most common among Winter fish
+
+Previously: to color everything by the allele that is most common among late-fall, we recode
+a column of alleles as LF (for Late-Fall) and F (for Fall)
+```{r}
+winter_ones <- big_haps %>%
+  filter(Ecotype == "Winter") %>%
+  group_by(POS, allele) %>%
+  summarise(freq = n()) %>%
+  filter(rank(-freq, ties = "first") == 1) %>%
+  rename(winter_allele = allele) %>%
+  ungroup()
+big_haps2 <- big_haps %>%
+  left_join(winter_ones, by = "POS") %>%
+  mutate(allele2 = ifelse(allele == winter_allele, "W", "S"))
+```
+
+Save for later!
+```{r}
+write_rds(big_haps2, path = "outputs/301/big_haps2.rds", compress = "xz")
+```
+
+```{r}
+proto_big_haps2 <- read_rds(path = "outputs/301/big_haps2.rds")
+```
+
+#### Plotting
+```{r}
+test<-big_haps2
+ggplot(test)+geom_raster(aes(x=as.character(POS), y=haplo_name, fill=allele2))+
+  scale_fill_viridis_d(direction=-1)+
+  theme(axis.title.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x = element_blank())+
+  theme(axis.text.y = element_text(size=4))+
+  labs(fill = "Allele")+
+  ggtitle(paste("Ots16 Haplo-Raster from ", min(big_haps2$POS), " to ", max(big_haps2$POS), sep="" )) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("outputs/301/Ots16-haplo-raster-p2.pdf", width=16, height=16)
+```
+
+### PEAK 1
+
+Recoding names
+```{sh}
+bcftools reheader --samples outputs/301/newnames -o outputs/301/bamlist156-chrom16-p1-filtered.recode.renamed.vcf outputs/301/bamlist156-chrom16-p1-filtered.recode.vcf
+
+java -jar ~/bin/beagle.27Jan18.7e1.jar gl=outputs/301/bamlist156-chrom16-p1-filtered.recode.renamed.vcf out=outputs/301/beagle-imputed-p1 > outputs/301/beagle-impute-stdout.txt 
+
+java -jar ~/bin/beagle.27Jan18.7e1.jar gt=outputs/301/beagle-imputed-p1.vcf.gz out=outputs/301/beagle-imp-phased-p1 ibd=true ibdcm=0.05 > outputs/301/beagle-phase-stdout.txt 
+```
+
+
+```{r}
+ibd1 <- read_tsv("outputs/301/beagle-imp-phased-p1.ibd.gz",
+         col_names = c("samp1", "hap1", "samp2", "hap2", "chrom", "start", "end", "LOD")) %>%
+  arrange(start, end)  %>%
+  separate(samp1, into = c("Run1","pop1", "id1"), sep = "-", remove = FALSE) %>%
+  separate(samp2, into = c("Run2","pop2", "id2"), sep = "-", remove = FALSE)
+
+```
+
+
+Read in the data:
+```{r}
+interm_dir<-c("outputs/301")
+V1 <- file.path(interm_dir, "beagle-imp-phased-p1.vcf.gz")
+haps1 <- ecaRbioinf::vcf_haplos2tidy(V1)
+
+big_haps1 <- haps1$tidy %>%
+  filter(Indiv != "Coho") %>%
+ # left_join(haps$avd, by = c("ChromKey", "POS", "Indiv", "haplo")) %>% 
+  mutate(haplo_name = paste0(Indiv, "-", haplo))
+
+big_haps1<-big_haps1 %>% separate(Indiv, into = c("Ecotype","Population", "ID"), sep = "-", remove = FALSE)
+```
+
+2907 variants
+```{r}
+winter_ones1 <- big_haps1 %>%
+  filter(Ecotype == "Winter") %>%
+  group_by(POS, allele) %>%
+  summarise(freq = n()) %>%
+  filter(rank(-freq, ties = "first") == 1) %>%
+  rename(winter_allele = allele) %>%
+  ungroup()
+big_haps12 <- big_haps1 %>%
+  left_join(winter_ones1, by = "POS") %>%
+  mutate(allele2 = ifelse(allele == winter_allele, "W", "S"))
+```
+```{r}
+test1<-big_haps12
+ggplot(test1)+geom_raster(aes(x=as.character(POS), y=haplo_name, fill=allele2))+
+  scale_fill_viridis_d(direction=-1)+
+  theme(axis.title.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x = element_blank())+
+  theme(axis.text.y = element_text(size=4))+
+  labs(fill = "Allele")+
+  ggtitle(paste("Ots16 Haplo-Raster from ", min(big_haps12$POS), " to ", max(big_haps12$POS), sep="" )) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("outputs/301/Ots16-haplo-raster-p1.pdf", width=16, height=16)
+```

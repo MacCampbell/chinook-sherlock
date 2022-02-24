@@ -1,0 +1,228 @@
+---
+title: "400-spring-winter-some-more"
+author: "Mac Campbell"
+date: "11/6/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(ecaRbioinf)
+library(vcfR)
+```
+
+## Some things to do
+_1_ Make genotyping calls including SNPs across two chroms (NC_037103.1, NC_037112.1)
+_2_ Check haplotype blocks to see if winter-winter-winter occurs across some distance
+_3_ Send indels/vcfs 
+
+Let's keep NC0317112 and cast a wider net.    
+24607056-28449468      
+to      
+23607056-29449468      
+
+```{r}
+data<-read_tsv("outputs/301/NC_037112.1-asso.lrt0.gz")
+data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
+  filter(log10p > 5) %>% filter(log10p!="Inf")
+  outliers <- data %>% filter(log10p >=10)
+```
+
+```{r}
+ggplot(data) + geom_point(aes(x=Position, y=log10p), color="grey50", alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Position, y=log10p), color="black", cex=0.5, alpha=0.9) +
+  geom_hline(yintercept = 5, alpha=0.6) +
+  geom_hline(yintercept = 6, lty=2, alpha=0.6) +
+  geom_hline(yintercept = 10, lty=2, alpha=0.6) +
+  geom_vline(xintercept = 22607056) +
+  geom_vline(xintercept = 30449468) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  ylab("-log10(p)") +
+  xlab("NC_037112.1") +
+  ggtitle("Spring vs Winter - Combined Data") +
+  theme(plot.title = element_text(hjust=0.5) )
+```
+
+Call variants in that window...
+
+```{sh, eval=FALSE}
+srun -p med -t 16:00:00 --nodes=1 bcftools mpileup --min-BQ 20 --min-MQ 20 -Ou --fasta-ref ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -r NC_037112.1:22607056-30449468 -b bamlists/bamlist156-winter-spring.bamlist | \
+bcftools call -mv -Ov -o outputs/400/bamlist156-chrom16.vcf > outputs/400/chrom16.out 2> outputs/400/chrom16.err &
+
+##109 MB vcf 
+#bgzip and bcftools index files, then
+srun -p med -t 8:00:00 --nodes=1 bcftools norm -c w outputs/400/bamlist156-chrom16.vcf.gz -f ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -Ov -o outputs/400/bamlist156-chrom16-norm.vcf 
+```
+
+
+###Imputation version
+
+Filter      
+Filtering options:
+__1__ biallelic
+__2__ Genotype call in the vcf for more then 40% of the individuals.  
+__3__ Minor allele freq > 0.05  
+
+```{sh, eval=FALSE}
+vcftools --gzvcf outputs/400/bamlist156-chrom16.vcf.gz --min-alleles 2 --max-alleles 2 --max-missing 0.4 --maf 0.05 --out outputs/400/bamlist156-chrom16-filtered --recode 
+
+```
+39773 out of 102927 sites kept.    
+
+Moving locally for haplo raster      
+Recoding names       
+```{sh, eval=FALSE}
+bcftools reheader --samples outputs/301/newnames -o outputs/400/bamlist156-chrom16-filtered.recode.renamed.vcf outputs/400/bamlist156-chrom16-filtered.recode.vcf
+```
+
+1. Imputing (all together now)
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.27Jan18.7e1.jar gl=outputs/400/bamlist156-chrom16-filtered.recode.renamed.vcf out=outputs/400/beagle-imputed > outputs/400/beagle-impute-stdout.txt 
+```
+
+
+2. Phasing    
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.27Jan18.7e1.jar gt=outputs/400/beagle-imputed.vcf.gz out=outputs/400/beagle-imp-phased ibd=true ibdcm=0.05 > outputs/400/beagle-phase-stdout.txt 
+```
+
+3. Copying code from Eric A.    
+
+```{r, eval=FALSE}
+ibd <- read_tsv("outputs/400/beagle-imp-phased.ibd.gz",
+         col_names = c("samp1", "hap1", "samp2", "hap2", "chrom", "start", "end", "LOD")) %>%
+  arrange(start, end)  %>%
+  separate(samp1, into = c("Run1","pop1", "id1"), sep = "-", remove = FALSE) %>%
+  separate(samp2, into = c("Run2","pop2", "id2"), sep = "-", remove = FALSE)
+
+```
+
+
+
+Read in the data:
+```{r, eval=FALSE}
+interm_dir<-c("outputs/400")
+V <- file.path(interm_dir, "beagle-imp-phased.vcf.gz")
+haps <- ecaRbioinf::vcf_haplos2tidy(V)
+```
+
+First, straighten out the haplotype names.
+```{r, eval=FALSE}
+big_haps <- haps$tidy %>%
+  filter(Indiv != "Coho") %>%
+ # left_join(haps$avd, by = c("ChromKey", "POS", "Indiv", "haplo")) %>% 
+  mutate(haplo_name = paste0(Indiv, "-", haplo))
+```
+
+Adding in data (Mac's take)
+```{r, eval=FALSE}
+big_haps<-big_haps %>% separate(Indiv, into = c("Ecotype","Population", "ID"), sep = "-", remove = FALSE)
+```
+
+
+### Color by the allele most common among Winter fish
+
+Previously: to color everything by the allele that is most common among late-fall, we recode
+a column of alleles as LF (for Late-Fall) and F (for Fall)
+```{r, eval=FALSE}
+winter_ones <- big_haps %>%
+  filter(Ecotype == "Winter") %>%
+  group_by(POS, allele) %>%
+  summarise(freq = n()) %>%
+  filter(rank(-freq, ties = "first") == 1) %>%
+  rename(winter_allele = allele) %>%
+  ungroup()
+big_haps2 <- big_haps %>%
+  left_join(winter_ones, by = "POS") %>%
+  mutate(allele2 = ifelse(allele == winter_allele, "W", "S"))
+```
+
+
+Combine the separately imputed .vcf files
+```{sh, eval=FALSE}
+bcftools index outputs/400/spring-imputed.vcf.gz
+bcftools index outputs/400/winter-imputed.vcf.gz
+bcftools merge -Oz -o outputs/400/ots16-imputed-combined.vcf.gz outputs/400/spring-imputed.vcf.gz outputs/400/winter-imputed.vcf.gz
+```
+
+Save for later!
+```{r, eval=FALSE}
+save(big_haps2, file = "outputs/400/big_haps2.rda")
+```
+
+```{r}
+load("outputs/400/big_haps2.rda")
+```
+
+#### Plotting
+```{r}
+test<-big_haps2
+ggplot(test)+geom_raster(aes(x=as.character(POS), y=haplo_name, fill=allele2))+
+  scale_fill_viridis_d(direction=-1)+
+  theme(axis.title.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x = element_blank())+
+  theme(axis.text.y = element_text(size=2))+
+  labs(fill = "Allele")+
+  ggtitle(paste("Ots16 Haplo-Raster from ", min(big_haps2$POS), " to ", max(big_haps2$POS), sep="" )) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("outputs/400/Ots16-haplo-raster.pdf")
+```
+
+#Separate and impute vcfs of run types
+```{sh, eval=FALSE}
+bcftools view -S outputs/400/winter-samples.txt outputs/400/bamlist156-chrom16-filtered.recode.renamed.vcf > outputs/400/winter.vcf
+bcftools view -S outputs/400/spring-samples.txt outputs/400/bamlist156-chrom16-filtered.recode.renamed.vcf > outputs/400/spring.vcf
+
+java -jar ~/bin/beagle.27Jan18.7e1.jar gl=outputs/400/winter.vcf out=outputs/400/winter-imputed 
+java -jar ~/bin/beagle.27Jan18.7e1.jar gl=outputs/400/spring.vcf out=outputs/400/spring-imputed 
+```
+
+Calculating some freqs:
+```{sh, eval=FALSE}
+vcftools --gzvcf outputs/400/winter-imputed.vcf.gz  --freq --out outputs/400/winter-imputed
+vcftools --gzvcf outputs/400/spring-imputed.vcf.gz  --freq --out outputs/400/spring-imputed
+```
+
+What were our highest snps again?
+```{r}
+outliers %>% arrange(-log10p) %>% head()
+```
+Load and compare freqs.      
+
+```{r}
+freq1<-read_tsv("outputs/400/winter-imputed.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAllelesWinter=X3, NWinter=X4, Major=X5, Minor=X6) %>%
+  separate(Major, into=c("Major","MajorFrequencyWinter"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequencyWinter"), sep=":")
+freq1$MajorFrequencyWinter<-as.numeric(freq1$MajorFrequencyWinter)
+freq1$MinorFrequencyWinter<-as.numeric(freq1$MinorFrequencyWinter)
+
+freq2<-read_tsv("outputs/400/spring-imputed.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAlleles=X3, N=X4, Major=X5, Minor=X6)%>%
+  separate(Major, into=c("Major","MajorFrequency"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequency"), sep=":")
+freq2$MajorFrequency<-as.numeric(freq2$MajorFrequency)
+freq2$MinorFrequency<-as.numeric(freq2$MinorFrequency)
+
+comb<-left_join(freq2, freq1)
+```
+
+```{r}
+merge<-comb %>% mutate(AbsoluteDifference=abs(MajorFrequencyWinter-MajorFrequency)) %>% 
+  select(Chromosome, Position, Major, Minor, MajorFrequency, MinorFrequency, MajorFrequencyWinter, MinorFrequencyWinter, AbsoluteDifference, N, NWinter) %>% 
+  filter(N > 30, NWinter > 20) %>% arrange(-AbsoluteDifference)
+
+write_csv(merge,"outputs/400/Ots16-allele-freqs.csv")
+
+merge
+
+```

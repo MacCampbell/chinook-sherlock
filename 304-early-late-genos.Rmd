@@ -1,0 +1,167 @@
+---
+title: "304-early-late-genos"
+author: "Mac Campbell"
+date: "November 16, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+## What is our peak?
+```{r}
+data <- read_tsv("outputs/300/NC_037124.1-asso.lrt0.gz")
+data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
+  filter(log10p > 1) %>% filter(log10p!="Inf")
+
+data %>% arrange(-log10p) %>% head()
+```
+
+General range of Thompson, Anderson et al. NC_037124.1:9660000–14825000.      
+
+12277000 looks about right.... Creating a +-50000 bp set of calls around THE snp.     
+
+```{r}
+outliers <- data %>% filter(log10p >=10)
+
+ggplot(data) + geom_point(aes(x=Position, y=log10p), color="grey50", alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Position, y=log10p), color="skyblue", cex=0.5, alpha=0.7) +
+  geom_hline(yintercept = 6, lty=1, alpha=0.6) +
+  geom_hline(yintercept = 10, lty=2, alpha=0.6) +
+  geom_vline(xintercept = 12277000-50000, lty=3) +
+  geom_vline(xintercept = 12277000+30000, lty=3) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  ylab("-log10(p)") +
+  xlab("NC_037124.1") +
+  ggtitle("Early vs Late - Combined Data") +
+  theme(plot.title = element_text(hjust=0.5) )
+```
+
+That's actually a pretty small area... Let's take a closer look.
+
+```{r}
+ggplot(data) + geom_point(aes(x=Position, y=log10p), color="grey50", alpha=0.75, cex=0.5) +
+  geom_point(data=outliers, aes(x=Position, y=log10p), color="skyblue", cex=0.5, alpha=0.7) +
+#  geom_hline(yintercept = 6, lty=1, alpha=0.6) +
+#  geom_hline(yintercept = 10, lty=2, alpha=0.6) +
+  geom_vline(xintercept = 12277000-50000, lty=3) +
+  geom_vline(xintercept = 12277000+30000, lty=3) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=45, hjust = 1, face="bold", size=6)) +
+  theme(legend.title = element_blank()) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "none") +
+  ylab("-log10(p)") +
+  xlab("NC_037124.1") +
+  ggtitle("Early vs Late - Combined Data") +
+  theme(plot.title = element_text(hjust=0.5) ) +
+  xlim(12277000-100000, 12277000+100000)
+```
+
+Making a vcf.
+
+```{sh, eval=FALSE}
+
+srun -p med -t 16:00:00 --nodes=1 bcftools mpileup --min-BQ 20 --min-MQ 20 -Ou --fasta-ref ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -r NC_037124.1:12227000-12307000 -b bamlists/bamlist156.bamlist | \
+bcftools call -mv -Ov -o outputs/304/bamlist156-chrom28.vcf > outputs/304/chrom28.out 2> outputs/304/chrom28.err &
+
+#bgzip and bcftools index files, then
+srun -p med -t 8:00:00 --nodes=1 bcftools norm -c w outputs/304/bamlist156-chrom28.vcf.gz -f ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -Ov -o outputs/304/bamlist156-chrom28-norm.vcf 
+
+#bgzip and bcftools again
+
+```
+Lines   total/split/realigned/skipped:	1143/0/203/0    
+
+Need a file to rename it all by.
+
+```{r}
+load("meta/tot.rda")
+name<-tot %>% mutate(Name=paste(Run, Tributary, `Sample ID`, sep="-")) %>% select(Name)
+write_tsv(name, "outputs/304/bamlist156-sample-names.txt", col_names = FALSE)
+
+names<-tot %>% mutate(Name=paste(Run, Tributary, `Sample ID`, sep="-")) 
+early<-names %>% filter(Run %in% c("Spring","Winter")) %>% select(Name)
+late<-names %>% filter(Run %in% c("Fall", "Late Fall")) %>% select(Name)
+write_tsv(early, "outputs/304/early-names.txt", col_names = FALSE)
+write_tsv(late, "outputs/304/late-names.txt", col_names = FALSE)
+
+```
+
+###Imputation version
+
+Filtering options:
+__1__ biallelic
+__2__ Genotype call in the vcf for more then 40% of the individuals.  
+__3__ Minor allele freq > 0.05  
+
+Moved locally    
+```{sh, eval=FALSE}
+vcftools --gzvcf outputs/304/bamlist156-chrom28-norm.vcf.gz --min-alleles 2 --max-alleles 2 --max-missing 0.4 --maf 0.05 --out outputs/304/bamlist156-chrom28-filtered --recode 
+
+```
+After filtering, kept 436 out of a possible 1143 Sites
+
+
+Recoding names       
+```{sh, eval=FALSE}
+bcftools reheader --samples outputs/304/bamlist156-sample-names.txt -o outputs/304/bamlist156-chrom28-filtered.recode.renamed.vcf outputs/304/bamlist156-chrom28-filtered.recode.vcf
+```
+
+1. Imputing (all together now)
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.27Jan18.7e1.jar gl=outputs/304/bamlist156-chrom28-filtered.recode.renamed.vcf out=outputs/304/beagle-imputed > outputs/304/beagle-impute-stdout.txt 
+```
+
+2. Phasing    
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.27Jan18.7e1.jar gt=outputs/304/beagle-imputed.vcf.gz out=outputs/304/beagle-imp-phased ibd=true ibdcm=0.05 > outputs/304/beagle-phase-stdout.txt 
+```
+
+
+### Calculate some freqs.
+```{sh, eval=FALSE}
+bcftools view -S outputs/304/early-names.txt outputs/304/beagle-imputed.vcf.gz > outputs/304/early.vcf
+bcftools view -S outputs/304/late-names.txt outputs/304/beagle-imputed.vcf.gz > outputs/304/late.vcf
+
+vcftools --vcf outputs/304/early.vcf  --freq --out outputs/304/early
+vcftools --vcf outputs/304/late.vcf --freq --out outputs/304/late
+
+```
+
+
+```{r}
+freq1<-read_tsv("outputs/304/early.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAllelesWinter=X3, NEarly=X4, Major=X5, Minor=X6) %>%
+  separate(Major, into=c("Major","MajorFrequencyEarly"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequencyEarly"), sep=":")
+freq1$MajorFrequencyEarly<-as.numeric(freq1$MajorFrequencyEarly)
+freq1$MinorFrequencyEarly<-as.numeric(freq1$MinorFrequencyEarly)
+
+freq2<-read_tsv("outputs/304/late.frq", skip = 1, col_names = FALSE) %>% 
+  rename(Chromosome=X1, Position=X2, NAlleles=X3, N=X4, Major=X5, Minor=X6)%>%
+  separate(Major, into=c("Major","MajorFrequency"), sep=":") %>% separate(Minor, into=c("Minor","MinorFrequency"), sep=":")
+freq2$MajorFrequency<-as.numeric(freq2$MajorFrequency)
+freq2$MinorFrequency<-as.numeric(freq2$MinorFrequency)
+
+comb<-left_join(freq2, freq1)
+```
+
+```{r}
+merge<-comb %>% mutate(AbsoluteDifference=abs(MajorFrequencyEarly-MajorFrequency)) %>% 
+  select(Chromosome, Position, Major, Minor, MajorFrequency, MinorFrequency, MajorFrequencyEarly, MinorFrequencyEarly, AbsoluteDifference, N, NEarly) %>% 
+  filter(N > 30, NEarly > 30) %>% arrange(-AbsoluteDifference)
+
+write_csv(merge,"outputs/304/Ots28-early-late-allele-freqs.csv")
+
+merge
+
+```

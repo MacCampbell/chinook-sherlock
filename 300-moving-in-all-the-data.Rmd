@@ -15,21 +15,7 @@ library(data.table)
 ```
 
 ## Adding in Thompson et al. data
-I was able to get gdrive off the ground on the cluster.  Had to create my own credentials with google for an API. Then I was able to use gdrive, two key commands:     
-`gdrive list --query "sharedWithMe"`     
-`gdrive download --recursive 1brKJixcc6Pm8kyTU4jA9iNnNmzxkTsEm`     
-Moving rather quickly.     
 
-Some ideas:
-__1__ Need to align the same (left align with new gatk method or with bcftools with vcf?)   
-      Also should check on the filtering (pcr duplicates removed, yes, not all properly paired reads, hmm).    
-      
-__2__ Need to drop low quality samples and the Klamath.      
-
-
-Left aligning, keeping only properly paired reads. See 101.1     
-
-I need to put this into a path that angsd won't balk at. Putting in bams/    
 ```{r}
 mm<-read_csv("~/github/cv-chinook/processed_data/wgs-chinoook-samples-cleaned.csv") 
 ```
@@ -61,7 +47,50 @@ ggplot(df) +
   scale_y_continuous(breaks=c(0,5,10,15))
 ```
 
+
+Creating a supplemental document with both data sources.
+
+```{r}
+total<-df %>% mutate(Bam=paste0("/home/maccamp/shernook/bams/",vcf_name,".bam")) %>% rename(`Sample ID` = vcf_name, Run=run_type, Tributary=Population) %>%
+    mutate(Source="Thompson et al. (2020)") %>%
+    select(`Sample ID`, Run, Tributary, Bam, Coverage, Source)
+total$`Sample ID`<-gsub("_S\\d+","",total$`Sample ID`)
+
+sra<-read_csv("meta/SraRunInfo.csv") %>% select(SampleName, Run) %>% dplyr::rename("SRA Accession"=Run)
+
+total2<-left_join(total,sra, by=c("Sample ID"="SampleName"))
+
+total2
+```
+
+
+```{r}
+#newmeta
+load("meta/new-seq-meta.rda")
+newmeta2<-newmeta %>% mutate(Source="This Study", `SRA Accession`="TBD")
+total3<-total2 %>% filter(!(Tributary %in% c("Salmon River Fall","Salmon River Spring",
+                              "Trinity River Hatchery Spring","Trinity River Hatchery Fall")))
+total3$Tributary<-gsub(" Fall| Spring| Late Fall| Winter", "",total3$Tributary)
+
+grandtotal<-bind_rows(newmeta2,total3) %>% mutate("Used in Assay Design"=ifelse(Coverage > 0.5, "Yes","No"))
+toprint<-grandtotal %>% select(Run, Tributary, `Sample ID`, Coverage, Source, `SRA Accession`, `Used in Assay Design`) %>%
+  arrange(Source, Run, Tributary)
+
+write_csv(toprint, "supplemental-docs/Supplemental Table SX.csv")
+```
+
+```{r}
+#checking numbers
+toprint %>% group_by(`Used in Assay Design`) %>% summarize(Count=n())
+```
+
+Checks out.    
+
+## Continuing
+
 Remove Klamath fish and low ballers.    
+
+
 ```{r}
 dfm <- df %>%
    filter(!(Population %in% c("Salmon River Fall","Salmon River Spring",
@@ -95,17 +124,6 @@ save(tot, file="meta/tot.rda")
 write_csv(tot, "meta/156-sequences.csv")
 ```
 
-```{r}
-total<-tot %>% select(Run, Tributary, `Sample ID`, Coverage, Source)
-total$Source<-gsub("New","This Study", total$Source)
-total$Source<-gsub("Existing","Thompson et al. 2020", total$Source)
-
-#link DPCh_plate1_A05_S5 to SRA nums
-sra<-read_csv("meta/SraRunInfo.csv") %>% select(SampleName, Run) %>% dplyr::rename("SRA Accession"=Run)
-
-total2<-left_join(total,sra, by=c("Sample ID"="SampleName"))
-```
-Great. Now to generate a table of Table of cov and if they are used in the study.
 
 Generate some summary data:
 

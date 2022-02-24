@@ -59,6 +59,9 @@ cov<-read_delim("outputs/200/test-chroms.cov", col_names=FALSE, delim=" ") %>% a
 
 load("meta/df2.rda")
 
+bams<-read_tsv("bamlists/bamlist56.bamlist", col_names = c("Bam"))
+
+df2<-df2 %>% filter(Bam %in% bams$Bam)
 pca <- covar2pcs(df2$`Sample ID`, cov)
 
 pca_long <- pca$PCs %>%
@@ -421,16 +424,3 @@ Now:
 Chromosome	Position	Major	Minor	MajorFrequency	MajorFrequencyWinter	AbsoluteDifference	N	NWinter 
 NC_037112.1	28356528	AAAAACACCTAAAAC	AAAAAC	0.964286	0.375	0.589286	56	8
 
-### Adapter contaminants
-
-gunzip -c ldi_B_8_R1.fastq.gz | grep "TACACTCTTTCCCTACACGACGCTCTTCCGATCT"
-TTACAGCTTCCTGTACACCGCTCCATCTCTGTCTGTACACTCTTTCCCTACACGACGCTCTTCCGATCTTTATTCATTCACATGGTCATGGGGGGGGGCTGGTGGGGGGGGTTATTATTGGGGGGGGGCGGGAGGGTTATGGTTTGGTGG
-
-One hit!   
-(base) maccamp@farm:~/data/delta-smelt-omics/demulti-SOMM515$ gunzip -c ldi_B_8_R1.fastq.gz | grep "GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT"
-
-no hits!    
-
-(base) maccamp@farm:~/data/delta-smelt-omics/demulti-SOMM515$ gunzip -c Ldi_A_7_R1.fastq.gz | grep "TACACTCTTTCCCTACACGACGCTCTTCCGATCT"
-CAGAGAGAGACTGGATCTATGAGTCTCTCTACACTCTTTCCCTACACGACGCTCTTCCGATCTTTTTGAATAACAATGTGCCATCTTAGACTGTTTGGGGGGGTTATGCCAATGTTACAGAAGATGGCACAGTGTTATTAAAAAAGATCGG    
-One hit!   

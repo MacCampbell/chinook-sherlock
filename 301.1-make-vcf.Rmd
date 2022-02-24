@@ -1,0 +1,26 @@
+---
+title: "301.1-make-vcf"
+author: "Mac Campbell"
+date: "October 29, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message=FALSE)
+```
+
+We would like to find some variants that are found in winter-run, but not spring-run.      
+How about generating a normalized vcf to see what's that all about.     
+
+```{sh, eval=FALSE}
+srun -p med -t 8:00:00 --nodes=1 bcftools mpileup -Ou --fasta-ref ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -r NC_037112.1:22424576-28717394 -b bamlists/bamlist156-winter-spring.bamlist | bcftools call -mv -Oz -o outputs/301/calls.vcf.gz
+
+srun -p med -t 8:00:00 --nodes=1 bcftools index outputs/301/calls.vcf.gz
+
+#Non AGCTN sites in reference alleles using -c w. What are these about anyways?
+srun -p med -t 8:00:00 --nodes=1 bcftools norm -c w outputs/301/calls.vcf.gz -f ~/genomes/chinook/GCF_002872995.1_Otsh_v1.0_genomic.fna -Ob -o outputs/301/calls.norm.bcf
+
+srun -p med -t 8:00:00 --nodes=1 bcftools index outputs/301/calls.norm.bcf
+
+srun -p med -t 8:00:00 --nodes=1 bcftools filter outputs/301/calls.norm.bcf  –G 5 -Ov -o outputs/301/bamlist156-chrom16.calls.norm.flt-indels.vcf
+```
