@@ -1,0 +1,128 @@
+---
+title: "800-sample-map"
+author: "Mac Campbell"
+date: "1/29/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+library(maps)
+library(mapdata)
+library(maptools)
+library(rgdal)
+library(raster)
+library(ggsn)
+```
+
+## Sample Map
+
+Hmm... Let's rough one out with Natural Earth, but first, what kind of georeferenced samples.
+
+```{r}
+library(tidyverse)
+
+data<-as_tibble(read.csv2(file="~/Dropbox/trout/chinook/Chinook Paper/wgs-chinoook-samples-cleaned.csv", header=TRUE, sep=","))
+
+#Include Latitudes/Longitudes
+locs<-as_tibble(read.csv2(file="~/Dropbox/trout/chinook/Chinook Paper/sample-locations.csv",
+                          header=TRUE, sep=","))
+
+total<-left_join(data,locs)
+total$Longitude<-as.numeric(as.character(total$Longitude))
+total$Latitude<-as.numeric(as.character(total$Latitude))
+###Location
+total<- total %>% mutate(Location = gsub(Population, pattern=" Late Fall| Spring| Fall| Winter", replacement=""))
+
+total$Location<- factor(total$Location, levels=c("Butte Creek", "Coleman Hatchery",
+                                                       "Feather River Hatchery", "Sacramento River",
+                                                       "San Joaquin River", "Salmon River",
+                                                       "Trinity River Hatchery"))
+
+
+cali<-map_data("state") %>% filter(region %in% c("california","oregon","nevada"))
+
+
+###Need colors
+cbPalette <- c("#999999", "#56B4E9", "#009E73", 
+              "#0072B2", "#CC79A7",
+              "#D55E00", "#F0E442", "#E69F00" )
+
+```
+
+
+Plot out samples
+
+```{r}
+summary<- total %>% group_by(Population, Latitude, Longitude, Place, run_type) %>% summarize(`Sample Size`=n()) %>%
+  filter(!(Population %in% c("Salmon River Fall", "Salmon River Spring", "Trinity River Hatchery Fall",
+                             "Trinity River Hatchery Spring")))
+```
+
+Winter-cyan 66CCEE     
+
+Spring-green 228833     
+
+Fall-red EE6677      
+
+LateFall-grey BBBBBB     
+
+```{r}
+ggplot(summary) +
+  geom_polygon(data=cali, aes(x=long, y=lat, group=group), color="black", fill=NA, alpha=0.75)+
+  geom_jitter(aes(x=Longitude, y=Latitude, fill=run_type, size=`Sample Size`), pch=21, alpha=0.75) +
+  scale_fill_manual(values=c("#EE6677","#BBBBBB","#228833","#66CCEE")) +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  coord_fixed(1.3, ylim=c(36,41)) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  theme(axis.title=element_text(face="bold", size=14))
+
+```
+
+Maybe I'll just change the Feather points manually so the don't overlap at all.
+
+## Natural Earth
+
+```{r}
+nat.earth<-stack("~/github/mccloud-rrt/outputs/1000/NE2_HR_LC_SR_W_DR/NE2_HR_LC_SR_W_DR.tif")
+domain <- c(min(cali$long), max(cali$long), min(cali$lat), max(cali$lat))
+nat.crop <- crop(nat.earth, y=extent(domain))
+
+rast.table <- data.frame(xyFromCell(nat.crop, 1:ncell(nat.crop)),
+                         getValues(nat.crop/255))
+
+
+rast.table$rgb <- with(rast.table, rgb(NE2_HR_LC_SR_W_DR.1,
+                                       NE2_HR_LC_SR_W_DR.2,
+                                       NE2_HR_LC_SR_W_DR.3,
+                                       1))
+
+ggplot() +
+  geom_raster(data = rast.table, mapping = aes(x = x, y = y), fill = rast.table$rgb, interpolate = TRUE) 
+```
+
+##All together
+```{r}
+ggplot(summary) +
+  geom_raster(data = rast.table, mapping = aes(x = x, y = y), fill = rast.table$rgb, interpolate = TRUE) + 
+  #geom_polygon(data=cali, aes(x=long, y=lat, group=group), color="black", fill=NA, alpha=0.75, size=.9) +
+  geom_jitter(aes(x=Longitude, y=Latitude, fill=run_type, size=`Sample Size`), pch=21, alpha=0.75) +
+  scale_fill_manual(values=c("#EE6677","#BBBBBB","#228833","#66CCEE")) +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  coord_fixed(1.3, xlim=c(-124, -118), ylim=c(36,41)) +
+  xlab("\nLongitude") +
+  ylab("Latitude\n") +
+  theme(axis.title=element_text(face="bold", size=14)) +
+  scale_fill_discrete(name = "Ecotype") +
+  theme(legend.justification = "center")
+
+ggsave("outputs/800/map.pdf")
+```

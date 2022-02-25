@@ -1,0 +1,151 @@
+---
+title: "702-winter-spring-haplo-rasters"
+author: "Mac Campbell"
+date: "1/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+#Make some haplo rasters for winter spring...
+
+```{r}
+library(tidyverse)
+library(ecaRbioinf)
+library(vcfR)
+```
+
+Ots13 is located here : outputs/401/winter-imputed.vcf.gz outputs/401/spring-imputed.vcf.gz   outputs/401/ots13-imputed-combined.vcf.gz     
+Ots16 is located here : outputs/400/winter-imputed.vcf.gz outputs/400/spring-imputed.vcf.gz   
+outputs/400/ots16-imputed-combined.vcf.gz
+
+```{sh, eval=FALSE}
+bcftools merge outputs/401/winter-imputed.vcf.gz outputs/401/spring-imputed.vcf.gz > outputs/702/ots13.vcf
+bcftools merge outputs/400/winter-imputed.vcf.gz outputs/400/spring-imputed.vcf.gz > outputs/702/ots16.vcf
+```
+
+Now to make separate tidy dfs labeled by Chrom and to combine in a faceted haplotyper raster.
+
+```{r, eval=FALSE}
+interm_dir<-c("outputs/702/")
+V <- file.path(interm_dir, "ots16-imputed-combined.vcf.gz")
+haps <- ecaRbioinf::vcf_haplos2tidy(V)
+```
+
+First, straighten out the haplotype names.
+```{r, eval=FALSE}
+big_haps <- remove_missing(haps$tidy) %>%
+  filter(Indiv != "Coho") %>%
+ # left_join(haps$avd, by = c("ChromKey", "POS", "Indiv", "haplo")) %>% 
+  mutate(haplo_name = paste0(Indiv, "-", haplo))
+```
+For some reason there is a problem with getting the alleles all coded. I added remove_missing as there appeared to be two lines for position and one was empty while the other was coded A/G etc.
+
+Adding in data (Mac's take)
+```{r, eval=FALSE}
+big_haps<-big_haps %>% separate(Indiv, into = c("Ecotype","Population", "ID"), sep = "-", remove = FALSE)
+```
+
+```{r}
+winter_ones <- big_haps %>%
+  filter(Ecotype == "Winter") %>%
+  group_by(POS, allele) %>%
+  summarise(freq = n()) %>%
+  filter(rank(-freq, ties = "first") == 1) %>%
+  rename(winter_allele = allele) %>%
+  ungroup()
+big_haps2 <- big_haps %>%
+  left_join(winter_ones, by = "POS") %>%
+  mutate(allele2 = ifelse(allele == winter_allele, "Winter", "Spring"))
+```
+
+Save for later!
+```{r, eval=FALSE}
+save(big_haps2, file = "outputs/702/big_haps2-16.rda")
+```
+
+```{r}
+load("outputs/702/big_haps2-16.rda")
+```
+
+
+#### Plotting
+```{r}
+test<-big_haps2
+
+
+names<- test %>% dplyr::select(haplo_name, Indiv, Ecotype, Population) %>% unique()
+
+ggplot(test)+geom_raster(aes(x=as.character(POS), y=haplo_name, fill=allele2)) +
+  scale_fill_manual(values=c("#66CCEE","#228833")) +
+  theme(axis.title.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x = element_blank()) +
+  theme(axis.text.y = element_text(size=2.5),
+        axis.ticks.y = element_line(size=.01)) +
+  labs(fill = "Allele")+
+  ggtitle(paste("Ots16 Haplotype Raster from ", min(big_haps2$POS), " to ", max(big_haps2$POS), sep="" )) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_discrete(labels=paste0(names$Ecotype)) +
+  theme(panel.grid = element_blank()) +
+  theme(panel.background = element_blank())
+ggsave("outputs/702/Ots16-haplo-raster.jpeg", width=10, height=11)
+```
+
+##Ots13
+```{r, eval=FALSE}
+interm_dir<-c("outputs/702/")
+V <- file.path(interm_dir, "ots13-imputed-combined.vcf.gz")
+haps <- ecaRbioinf::vcf_haplos2tidy(V)
+big_haps <- remove_missing(haps$tidy) %>%
+  filter(Indiv != "Coho") %>%
+ # left_join(haps$avd, by = c("ChromKey", "POS", "Indiv", "haplo")) %>% 
+  mutate(haplo_name = paste0(Indiv, "-", haplo))
+
+big_haps<-big_haps %>% separate(Indiv, into = c("Ecotype","Population", "ID"), sep = "-", remove = FALSE)
+
+winter_ones <- big_haps %>%
+  filter(Ecotype == "Winter") %>%
+  group_by(POS, allele) %>%
+  summarise(freq = n()) %>%
+  filter(rank(-freq, ties = "first") == 1) %>%
+  rename(winter_allele = allele) %>%
+  ungroup()
+big_haps2 <- big_haps %>%
+  left_join(winter_ones, by = "POS") %>%
+  mutate(allele2 = ifelse(allele == winter_allele, "Winter", "Spring"))
+
+save(big_haps2, file = "outputs/702/big_haps2-13.rda")
+```
+
+```{r}
+load("outputs/702/big_haps2-13.rda")
+```
+
+
+#### Plotting
+```{r}
+test13<-big_haps2
+
+
+names<- test13 %>% dplyr::select(haplo_name, Indiv, Ecotype, Population) %>% unique()
+
+ggplot(test13)+geom_raster(aes(x=as.character(POS), y=haplo_name, fill=allele2)) +
+  scale_fill_manual(values=c("#66CCEE","#228833")) +
+  theme(axis.title.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x = element_blank()) +
+  theme(axis.text.y = element_text(size=2.5),
+        axis.ticks.y = element_line(size=.01)) +
+  labs(fill = "Allele")+
+  ggtitle(paste("Ots13 Haplotype Raster from ", min(big_haps2$POS), " to ", max(big_haps2$POS), sep="" )) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_discrete(labels=paste0(names$Ecotype)) +
+  theme(panel.grid = element_blank()) +
+  theme(panel.background = element_blank())
+ggsave("outputs/702/Ots13-haplo-raster.jpeg", width=10, height=11)
+```

@@ -1,0 +1,157 @@
+---
+title: "701-early-late-haplo-raster"
+author: "Mac Campbell"
+date: "January 12, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(ecaRbioinf)
+library(vcfR)
+```
+
+##Make haplotype rasters of regions of interest     
+
+Winter&Spring=purple AA3377      
+
+Fall&LateFall=yellow CCBB44      
+
+Winter-cyan 66CCEE     
+
+Spring-green 228833     
+
+Fall-red EE6677      
+
+LateFall-grey BBBBBB     
+
+###Early v Late
+Looks like I never made a haplo-raster plot for this. Need to keep in mind the imputation used for marker design was separate for each type.
+
+```{sh, eval=FALSE}
+bcftools view -S outputs/304/early-names.txt outputs/304/bamlist156-chrom28-filtered.recode.renamed.vcf > outputs/701/early.vcf
+bcftools view -S outputs/304/late-names.txt outputs/304/bamlist156-chrom28-filtered.recode.renamed.vcf > outputs/701/late.vcf
+```
+
+1. Imputing 
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.27Jan18.7e1.jar gl=outputs/701/early.vcf out=outputs/701/early-imputed > outputs/701/early-beagle-impute-stdout.txt 
+
+java -jar ~/bin/beagle.27Jan18.7e1.jar gl=outputs/701/late.vcf out=outputs/701/late-imputed > outputs/701/late-beagle-impute-stdout.txt 
+```
+
+2. Phasing    
+```{sh, eval=FALSE}
+java -jar ~/bin/beagle.27Jan18.7e1.jar gt=outputs/701/early-imputed.vcf.gz out=outputs/701/early-beagle-imp-phased ibd=true ibdcm=0.05 > outputs/701/early-beagle-phase-stdout.txt 
+
+java -jar ~/bin/beagle.27Jan18.7e1.jar gt=outputs/701/late-imputed.vcf.gz out=outputs/701/late-beagle-imp-phased ibd=true ibdcm=0.05 > outputs/701/late-beagle-phase-stdout.txt
+```
+
+3. Combine vcf files     
+
+index first, then:    
+
+```{sh, eval=FALSE}
+bcftools merge outputs/701/early-beagle-imp-phased.vcf.gz outputs/701/late-beagle-imp-phased.vcf.gz > outputs/701/both-beagle-imp-phased.vcf
+```
+
+```{r, eval=FALSE}
+interm_dir<-c("outputs/701")
+V <- file.path(interm_dir, "both-beagle-imp-phased.vcf")
+haps <- ecaRbioinf::vcf_haplos2tidy(V)
+```
+
+First, straighten out the haplotype names.
+```{r, eval=FALSE}
+big_haps <- haps$tidy %>%
+  filter(Indiv != "Coho") %>%
+ # left_join(haps$avd, by = c("ChromKey", "POS", "Indiv", "haplo")) %>% 
+  mutate(haplo_name = paste0(Indiv, "-", haplo))
+```
+
+Adding in data (Mac's take)
+```{r, eval=FALSE}
+big_haps<-big_haps %>% separate(Indiv, into = c("Ecotype","Population", "ID"), sep = "-", remove = FALSE)
+```
+
+
+### Color by the allele most common among Early fish
+
+Previously: to color everything by the allele that is most common among late-fall, we recode
+a column of alleles as LF (for Late-Fall) and F (for Fall)
+```{r, eval=FALSE}
+early_ones <- big_haps %>%
+  filter(Ecotype %in% c("Winter", "Spring")) %>%
+  group_by(POS, allele) %>%
+  summarise(freq = n()) %>%
+  filter(rank(-freq, ties = "first") == 1) %>%
+  rename(early_allele = allele) %>%
+  ungroup()
+big_haps2 <- big_haps %>%
+  left_join(early_ones, by = "POS") %>%
+  mutate(allele2 = ifelse(allele == early_allele, "Early", "Late"))
+```
+
+
+Save for later!
+```{r, eval=FALSE}
+save(big_haps2, file = "outputs/701/big_haps2.rda")
+```
+
+```{r}
+load("outputs/701/big_haps2.rda")
+```
+
+
+#### Plotting
+```{r}
+test<-big_haps2
+names<- test %>% select(haplo_name, Indiv, Ecotype, Population) %>% unique()
+
+ggplot(test)+geom_raster(aes(x=as.character(POS), y=haplo_name, fill=allele2))+
+  scale_fill_manual(values=c("#AA3377","#CCBB44"))+
+  theme(axis.title.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x = element_blank())+
+  theme(axis.text.y = element_text(size=2.5),
+        axis.ticks.y = element_line(size=.01) )+
+  labs(fill = "Allele")+
+  ggtitle(paste("Ots28 Haplotype Raster from ", min(big_haps2$POS), " to ", max(big_haps2$POS), sep="" )) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_discrete(labels=paste0(names$Ecotype)) +
+  theme(panel.grid = element_blank()) +
+  theme(panel.background = element_blank())
+ggsave("outputs/701/Ots28-haplo-raster.jpeg", width=10, height=11)
+```
+
+Site:
+12277546     
+Can I draw a rectange on there?
+```{r}
+ggplot(test %>% filter(POS==12277546)) + 
+  geom_raster(aes(x=as.character(POS), y=haplo_name, fill=allele2))+
+  scale_fill_manual(values=c("#AA3377","#CCBB44"))+
+ # geom_rect(aes(xmin=12277546-100000, xmax=12277546+100000,
+  #          ymin=min(test$haplo_name), ymax=max(test$haplo_name)),
+   #         inherit.aes = FALSE) +
+  theme(axis.title.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x = element_blank())+
+  theme(axis.text.y = element_text(size=2.5),
+        axis.ticks.y = element_line(size=.01) )+
+  labs(fill = "Allele")+
+  ggtitle("Diagnostic Locus Ots28") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_discrete(labels=paste0(names$Ecotype)) +
+  theme(panel.grid = element_blank()) +
+  theme(panel.background = element_blank())
+ # with(test, annotate(geom = "rect", xmin=12277546-10000, xmax=12277546+10000,
+  #                    ymin=min(test$haplo_name), ymax=max(test$haplo_name)))
+ggsave("outputs/701/diagnostic-locus-early-late.jpeg",width=4, height=11)
+```

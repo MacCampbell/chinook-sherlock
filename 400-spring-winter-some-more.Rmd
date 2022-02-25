@@ -16,7 +16,7 @@ library(vcfR)
 ```
 
 ## Some things to do
-_1_ Make genotyping calls including SNPs across two chroms (NC_037103.1, NC_037112.1)
+_1_ Make genotyping calls including SNPs 
 _2_ Check haplotype blocks to see if winter-winter-winter occurs across some distance
 _3_ Send indels/vcfs 
 

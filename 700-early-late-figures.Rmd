@@ -33,11 +33,11 @@ maccamp@farm:~/shernook/outputs/301$ gzip spring-winter.lrt0
 ```
 Filtering out lrt <=2 reduced file from 162 MB to 65 MB, but, let's focus on the main chromosomes
 ```{r}
-d1 <-  read_tsv("outputs/300/NC_037097.1-asso.lrt0.gz")
+#d1 <-  read_tsv("outputs/300/NC_037097.1-asso.lrt0.gz")
 d16 <- read_tsv("outputs/300/NC_037112.1-asso.lrt0.gz")
 d28 <- read_tsv("outputs/300/NC_037124.1-asso.lrt0.gz")
 
-data<-bind_rows(d1,d16,d28) 
+data<-bind_rows(d16,d28) 
 
 data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
   filter(log10p > 1) %>% filter(log10p!="Inf")
@@ -92,11 +92,11 @@ earlylate<-dd %>% mutate(Comparison="Early - Late")
 
 ## Spring-Winter
 ```{r}
-d1 <-  read_tsv("outputs/301/NC_037097.1-asso.lrt0.gz")
+#d1 <-  read_tsv("outputs/301/NC_037097.1-asso.lrt0.gz")
 d16 <- read_tsv("outputs/301/NC_037112.1-asso.lrt0.gz")
 d28 <- read_tsv("outputs/301/NC_037124.1-asso.lrt0.gz")
 
-data<-bind_rows(d1,d16,d28) 
+data<-bind_rows(d16,d28) 
 
 data <- data %>% mutate(log10p = -log10(dchisq(LRT, df = 1))) %>%
   filter(log10p > 1) %>% filter(log10p!="Inf")
