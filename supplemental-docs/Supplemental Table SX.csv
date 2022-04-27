@@ -1,193 +1,193 @@
-Run,Tributary,Sample ID,Coverage,Source,SRA Accession,Used in Assay Design
-Fall,Butte,F030114BUT,0.173558,This Study,TBD,No
-Fall,Butte,F040089BUT,0.152253,This Study,TBD,No
-Fall,Butte,F040095BUT,0.114912,This Study,TBD,No
-Fall,Butte,F040097BUT,0.806283,This Study,TBD,Yes
-Fall,Butte,F040117BUT,0.229722,This Study,TBD,No
-Fall,Butte,F040121BUT,0.239795,This Study,TBD,No
-Fall,Coleman,F020137COL,1.56962,This Study,TBD,Yes
-Fall,Coleman,F020140COL,1.50705,This Study,TBD,Yes
-Fall,Coleman,F020142COL,1.39468,This Study,TBD,Yes
-Fall,Coleman,F020154COL,1.5146,This Study,TBD,Yes
-Fall,Coleman,F020158COL,2.32347,This Study,TBD,Yes
-Fall,Coleman,F020164COL,1.42634,This Study,TBD,Yes
-Fall,Deer,F020022DER,0.706674,This Study,TBD,Yes
-Fall,Deer,F030013DER,2.59151,This Study,TBD,Yes
-Fall,Deer,F030014DER,2.40078,This Study,TBD,Yes
-Fall,Deer,F040008DER,0.35,This Study,TBD,No
-Fall,Deer,F040010DER,0.230482,This Study,TBD,No
-Fall,Deer,F040011DER,0.134901,This Study,TBD,No
-Fall,Merced,F080027MER,0.974221,This Study,TBD,Yes
-Fall,Merced,F010157MER,1.89048,This Study,TBD,Yes
-Fall,Merced,F010240MER,1.01001,This Study,TBD,Yes
-Fall,Merced,F010246MER,0.394394,This Study,TBD,No
-Fall,Merced,F010225MER,3.25348,This Study,TBD,Yes
-Fall,Merced,F010226MER,1.40483,This Study,TBD,Yes
-Fall,Mill,F030040MIL,2.86172,This Study,TBD,Yes
-Fall,Mill,F030045MIL,0.879811,This Study,TBD,Yes
-Fall,Mill,F030051MIL,0.428684,This Study,TBD,No
-Fall,Mill,F030059MIL,0.764267,This Study,TBD,Yes
-Fall,Mill,F030071MIL,0.745379,This Study,TBD,Yes
-Fall,Mill,F030081MIL,2.76155,This Study,TBD,Yes
-Fall,Stanislaus,F010019STN,0.921187,This Study,TBD,Yes
-Fall,Stanislaus,F010289STN,1.00082,This Study,TBD,Yes
-Fall,Stanislaus,F010290STN,0.449379,This Study,TBD,No
-Fall,Stanislaus,F040043STN,0.505767,This Study,TBD,Yes
-Fall,Stanislaus,F040052STN,0.217043,This Study,TBD,No
-Fall,Stanislaus,F040060STN,0.210188,This Study,TBD,No
-Fall,Tuolumne,F080012TOU,0.20349,This Study,TBD,No
-Fall,Tuolumne,F080016TOU,2.16521,This Study,TBD,Yes
-Fall,Tuolumne,F040033TOU,0.144054,This Study,TBD,No
-Fall,Tuolumne,F040036TOU,0.249795,This Study,TBD,No
-Fall,Tuolumne,F040079TOU,0.187991,This Study,TBD,No
-Fall,Tuolumne,F040020TOU,0.225473,This Study,TBD,No
-Late Fall,Upper Sac,L030077USR,0.182993,This Study,TBD,No
-Late Fall,Upper Sac,L030082USR,0.165614,This Study,TBD,No
-Late Fall,Upper Sac,L030085USR,0.762554,This Study,TBD,Yes
-Late Fall,Upper Sac,L030091USR,0.418054,This Study,TBD,No
-Late Fall,Upper Sac,L030092USR,0.390133,This Study,TBD,No
-Late Fall,Upper Sac,L030094USR,0.489897,This Study,TBD,No
-Spring,Butte,S080015BUT,1.37419,This Study,TBD,Yes
-Spring,Butte,S080019BUT,0.204483,This Study,TBD,No
-Spring,Butte,S080034BUT,0.517513,This Study,TBD,Yes
-Spring,Butte,S080037BUT,0.568156,This Study,TBD,Yes
-Spring,Butte,S080040BUT,1.1492,This Study,TBD,Yes
-Spring,Butte,S080051BUT,2.63439,This Study,TBD,Yes
-Spring,Butte,S080052BUT,0.459346,This Study,TBD,No
-Spring,Deer,S020022DER,0.497768,This Study,TBD,No
-Spring,Deer,S020032DER,0.225877,This Study,TBD,No
-Spring,Deer,S020037DER,0.533386,This Study,TBD,Yes
-Spring,Deer,S020039DER,0.498801,This Study,TBD,No
-Spring,Deer,S020041DER,0.447783,This Study,TBD,No
-Spring,Deer,S020045DER,0.618048,This Study,TBD,Yes
-Spring,Deer,S020050DER,0.358529,This Study,TBD,No
-Spring,Deer,S020055DER,0.559651,This Study,TBD,Yes
-Spring,Deer,S020061DER,0.508915,This Study,TBD,Yes
-Spring,Deer,S020064DER,0.417609,This Study,TBD,No
-Spring,Deer,S020078DER,0.254321,This Study,TBD,No
-Spring,Deer,S050007DER,1.41021,This Study,TBD,Yes
-Spring,Deer,S050016DER,2.73392,This Study,TBD,Yes
-Spring,Deer,S050040DER,0.574556,This Study,TBD,Yes
-Spring,Deer,S050054DER,1.34355,This Study,TBD,Yes
-Spring,Mill,S020021MIL,0.542623,This Study,TBD,Yes
-Spring,Mill,S020023MIL,0.744256,This Study,TBD,Yes
-Spring,Mill,S020024MIL,0.508042,This Study,TBD,Yes
-Spring,Mill,S020025MIL,0.803957,This Study,TBD,Yes
-Spring,Mill,S020034MIL,0.749826,This Study,TBD,Yes
-Spring,Mill,S020035MIL,0.862026,This Study,TBD,Yes
-Spring,Mill,S020052MIL,0.595799,This Study,TBD,Yes
-Spring,Mill,S020054MIL,0.354097,This Study,TBD,No
-Spring,Mill,S020057MIL,0.661445,This Study,TBD,Yes
-Spring,Mill,S040028MIL,1.11088,This Study,TBD,Yes
-Spring,Mill,S040031MIL,1.55454,This Study,TBD,Yes
-Spring,Mill,S040113MIL,0.228898,This Study,TBD,No
-Spring,Mill,S040114MIL,1.69293,This Study,TBD,Yes
-Spring,Mill,S040116MIL,2.40219,This Study,TBD,Yes
-Spring,Mill,S040117MIL,0.527029,This Study,TBD,Yes
-Spring,Yuba,S980004YUB,2.83748,This Study,TBD,Yes
-Spring,Yuba,S990001YUB,3.08845,This Study,TBD,Yes
-Spring,Yuba,S990002YUB,1.01734,This Study,TBD,Yes
-Spring,Yuba,S990004YUB,2.46692,This Study,TBD,Yes
-Spring,Yuba,S990005YUB,2.18018,This Study,TBD,Yes
-Winter,Upper Sac,W011922USR,4.19241,This Study,TBD,Yes
-Winter,Upper Sac,W011924USR,7.18753,This Study,TBD,Yes
-Winter,Upper Sac,W011933USR,4.54292,This Study,TBD,Yes
-Winter,Upper Sac,W011934USR,2.93874,This Study,TBD,Yes
-Winter,Upper Sac,W011812USR,3.50872,This Study,TBD,Yes
-Winter,Upper Sac,W011815USR,3.24306,This Study,TBD,Yes
-Fall,Feather River Hatchery,DPCh_plate1_A05,1.12662,Thompson et al. (2020),SRR12798310,Yes
-Fall,Feather River Hatchery,DPCh_plate1_A06,0.611983,Thompson et al. (2020),SRR12798301,Yes
-Fall,Feather River Hatchery,DPCh_plate1_B05,1.44547,Thompson et al. (2020),SRR12798309,Yes
-Fall,Feather River Hatchery,DPCh_plate1_B06,1.25611,Thompson et al. (2020),SRR12798300,Yes
-Fall,Feather River Hatchery,DPCh_plate1_C05,1.79118,Thompson et al. (2020),SRR12798308,Yes
-Fall,Feather River Hatchery,DPCh_plate1_C06,1.32261,Thompson et al. (2020),SRR12798299,Yes
-Fall,Feather River Hatchery,DPCh_plate1_D05,1.38435,Thompson et al. (2020),SRR12798307,Yes
-Fall,Feather River Hatchery,DPCh_plate1_D06,1.18651,Thompson et al. (2020),SRR12798298,Yes
-Fall,Feather River Hatchery,DPCh_plate1_E05,0.887101,Thompson et al. (2020),SRR12798306,Yes
-Fall,Feather River Hatchery,DPCh_plate1_E06,0.643005,Thompson et al. (2020),SRR12798385,Yes
-Fall,Feather River Hatchery,DPCh_plate1_F05,1.30405,Thompson et al. (2020),SRR12798305,Yes
-Fall,Feather River Hatchery,DPCh_plate1_F06,1.28044,Thompson et al. (2020),SRR12798384,Yes
-Fall,Feather River Hatchery,DPCh_plate1_G05,2.18251,Thompson et al. (2020),SRR12798304,Yes
-Fall,Feather River Hatchery,DPCh_plate1_G06,1.23149,Thompson et al. (2020),SRR12798383,Yes
-Fall,Feather River Hatchery,DPCh_plate1_H05,1.54476,Thompson et al. (2020),SRR12798303,Yes
-Fall,Feather River Hatchery,DPCh_plate1_H06,1.63511,Thompson et al. (2020),SRR12798382,Yes
-Fall,San Joaquin River,DPCh_plate2_A01,1.42159,Thompson et al. (2020),SRR12798352,Yes
-Fall,San Joaquin River,DPCh_plate2_A02,1.14233,Thompson et al. (2020),SRR12798429,Yes
-Fall,San Joaquin River,DPCh_plate2_B01,1.61985,Thompson et al. (2020),SRR12798351,Yes
-Fall,San Joaquin River,DPCh_plate2_B02,2.02346,Thompson et al. (2020),SRR12798428,Yes
-Fall,San Joaquin River,DPCh_plate2_C01,1.29413,Thompson et al. (2020),SRR12798350,Yes
-Fall,San Joaquin River,DPCh_plate2_C02,1.2897,Thompson et al. (2020),SRR12798427,Yes
-Fall,San Joaquin River,DPCh_plate2_D01,1.48942,Thompson et al. (2020),SRR12798349,Yes
-Fall,San Joaquin River,DPCh_plate2_D02,1.39757,Thompson et al. (2020),SRR12798426,Yes
-Fall,San Joaquin River,DPCh_plate2_E01,1.4786300000000001,Thompson et al. (2020),SRR12798433,Yes
-Fall,San Joaquin River,DPCh_plate2_E02,1.42553,Thompson et al. (2020),SRR12798425,Yes
-Fall,San Joaquin River,DPCh_plate2_F01,1.70787,Thompson et al. (2020),SRR12798432,Yes
-Fall,San Joaquin River,DPCh_plate2_F02,1.57726,Thompson et al. (2020),SRR12798424,Yes
-Fall,San Joaquin River,DPCh_plate2_G01,1.83365,Thompson et al. (2020),SRR12798431,Yes
-Fall,San Joaquin River,DPCh_plate2_G02,1.96949,Thompson et al. (2020),SRR12798422,Yes
-Fall,San Joaquin River,DPCh_plate2_H01,1.35898,Thompson et al. (2020),SRR12798430,Yes
-Fall,San Joaquin River,DPCh_plate2_H02,2.22132,Thompson et al. (2020),SRR12798421,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_A03,1.61455,Thompson et al. (2020),SRR12798420,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_A04,1.14074,Thompson et al. (2020),SRR12798411,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_B03,1.25631,Thompson et al. (2020),SRR12798419,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_B04,0.662875,Thompson et al. (2020),SRR12798410,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_C03,1.44121,Thompson et al. (2020),SRR12798418,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_C04,1.24953,Thompson et al. (2020),SRR12798345,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_D03,1.42507,Thompson et al. (2020),SRR12798417,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_D04,1.2161,Thompson et al. (2020),SRR12798344,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_E03,1.38949,Thompson et al. (2020),SRR12798416,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_E04,1.5219,Thompson et al. (2020),SRR12798343,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_F03,1.5747,Thompson et al. (2020),SRR12798415,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_F04,1.29507,Thompson et al. (2020),SRR12798342,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_G03,1.93257,Thompson et al. (2020),SRR12798414,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_G04,1.63154,Thompson et al. (2020),SRR12798341,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_H03,1.71644,Thompson et al. (2020),SRR12798413,Yes
-Late Fall,Coleman Hatchery,DPCh_plate2_H04,1.68548,Thompson et al. (2020),SRR12798340,Yes
-Spring,Butte Creek,DPCh_plate2_A07,1.56008,Thompson et al. (2020),SRR12798409,Yes
-Spring,Butte Creek,DPCh_plate2_A08,0.569022,Thompson et al. (2020),SRR12798400,Yes
-Spring,Butte Creek,DPCh_plate2_B07,1.26929,Thompson et al. (2020),SRR12798408,Yes
-Spring,Butte Creek,DPCh_plate2_B08,0.967269,Thompson et al. (2020),SRR12798399,Yes
-Spring,Butte Creek,DPCh_plate2_C07,0.988591,Thompson et al. (2020),SRR12798407,Yes
-Spring,Butte Creek,DPCh_plate2_C08,0.472629,Thompson et al. (2020),SRR12798398,No
-Spring,Butte Creek,DPCh_plate2_D07,1.87868,Thompson et al. (2020),SRR12798406,Yes
-Spring,Butte Creek,DPCh_plate2_D08,2.73778,Thompson et al. (2020),SRR12798397,Yes
-Spring,Butte Creek,DPCh_plate2_E07,1.55325,Thompson et al. (2020),SRR12798405,Yes
-Spring,Butte Creek,DPCh_plate2_E08,0.875735,Thompson et al. (2020),SRR12798396,Yes
-Spring,Butte Creek,DPCh_plate2_F07,1.55325,Thompson et al. (2020),SRR12798404,Yes
-Spring,Butte Creek,DPCh_plate2_F08,0.996617,Thompson et al. (2020),SRR12798395,Yes
-Spring,Butte Creek,DPCh_plate2_G07,2.01421,Thompson et al. (2020),SRR12798402,Yes
-Spring,Butte Creek,DPCh_plate2_G08,0.846337,Thompson et al. (2020),SRR12798394,Yes
-Spring,Butte Creek,DPCh_plate2_H07,1.64135,Thompson et al. (2020),SRR12798401,Yes
-Spring,Butte Creek,DPCh_plate2_H08,1.08703,Thompson et al. (2020),SRR12798393,Yes
-Spring,Feather River Hatchery,DPCh_plate1_A07,1.34286,Thompson et al. (2020),SRR12798381,Yes
-Spring,Feather River Hatchery,DPCh_plate1_A08,1.46535,Thompson et al. (2020),SRR12798372,Yes
-Spring,Feather River Hatchery,DPCh_plate1_B07,1.5267,Thompson et al. (2020),SRR12798380,Yes
-Spring,Feather River Hatchery,DPCh_plate1_B08,1.38461,Thompson et al. (2020),SRR12798371,Yes
-Spring,Feather River Hatchery,DPCh_plate1_C07,0.507718,Thompson et al. (2020),SRR12798378,Yes
-Spring,Feather River Hatchery,DPCh_plate1_C08,1.4213,Thompson et al. (2020),SRR12798370,Yes
-Spring,Feather River Hatchery,DPCh_plate1_D07,1.2881,Thompson et al. (2020),SRR12798377,Yes
-Spring,Feather River Hatchery,DPCh_plate1_D08,1.59284,Thompson et al. (2020),SRR12798369,Yes
-Spring,Feather River Hatchery,DPCh_plate1_E07,1.45449,Thompson et al. (2020),SRR12798376,Yes
-Spring,Feather River Hatchery,DPCh_plate1_E08,0.484124,Thompson et al. (2020),SRR12798367,No
-Spring,Feather River Hatchery,DPCh_plate1_F07,1.42076,Thompson et al. (2020),SRR12798375,Yes
-Spring,Feather River Hatchery,DPCh_plate1_F08,1.27169,Thompson et al. (2020),SRR12798366,Yes
-Spring,Feather River Hatchery,DPCh_plate1_G07,1.26503,Thompson et al. (2020),SRR12798374,Yes
-Spring,Feather River Hatchery,DPCh_plate1_G08,1.41615,Thompson et al. (2020),SRR12798365,Yes
-Spring,Feather River Hatchery,DPCh_plate1_H07,1.40236,Thompson et al. (2020),SRR12798373,Yes
-Spring,Feather River Hatchery,DPCh_plate1_H08,1.33588,Thompson et al. (2020),SRR12798364,Yes
-Winter,Sacramento River,DPCh_plate2_A05,0.966201,Thompson et al. (2020),SRR12798339,Yes
-Winter,Sacramento River,DPCh_plate2_A06,1.3546,Thompson et al. (2020),SRR12798330,Yes
-Winter,Sacramento River,DPCh_plate2_B05,1.72189,Thompson et al. (2020),SRR12798338,Yes
-Winter,Sacramento River,DPCh_plate2_B06,1.74834,Thompson et al. (2020),SRR12798329,Yes
-Winter,Sacramento River,DPCh_plate2_C05,1.11872,Thompson et al. (2020),SRR12798336,Yes
-Winter,Sacramento River,DPCh_plate2_C06,1.8565,Thompson et al. (2020),SRR12798328,Yes
-Winter,Sacramento River,DPCh_plate2_D05,1.74885,Thompson et al. (2020),SRR12798335,Yes
-Winter,Sacramento River,DPCh_plate2_D06,1.95742,Thompson et al. (2020),SRR12798327,Yes
-Winter,Sacramento River,DPCh_plate2_E05,1.49485,Thompson et al. (2020),SRR12798334,Yes
-Winter,Sacramento River,DPCh_plate2_E06,2.01624,Thompson et al. (2020),SRR12798325,Yes
-Winter,Sacramento River,DPCh_plate2_F05,1.55537,Thompson et al. (2020),SRR12798333,Yes
-Winter,Sacramento River,DPCh_plate2_F06,2.16937,Thompson et al. (2020),SRR12798324,Yes
-Winter,Sacramento River,DPCh_plate2_G05,1.57736,Thompson et al. (2020),SRR12798332,Yes
-Winter,Sacramento River,DPCh_plate2_G06,0.844599,Thompson et al. (2020),SRR12798323,Yes
-Winter,Sacramento River,DPCh_plate2_H05,2.08629,Thompson et al. (2020),SRR12798331,Yes
-Winter,Sacramento River,DPCh_plate2_H06,2.46558,Thompson et al. (2020),SRR12798322,Yes
+Run,Tributary,Sample ID,Sample Date,Sampling Method,Sex,Coverage,Source,SRA Accession,Used in Assay Design
+Fall,Butte,F030114BUT,11/18/03,carcass recovery,F,0.173558,This Study,TBD,No
+Fall,Butte,F040089BUT,11/18/04,Escapement survey,M,0.152253,This Study,TBD,No
+Fall,Butte,F040095BUT,11/22/04,Escapement survey,M,0.114912,This Study,TBD,No
+Fall,Butte,F040097BUT,11/22/04,Escapement survey,M,0.806283,This Study,TBD,Yes
+Fall,Butte,F040117BUT,11/30/04,Escapement survey,F,0.229722,This Study,TBD,No
+Fall,Butte,F040121BUT,11/30/04,Escapement survey,M,0.239795,This Study,TBD,No
+Fall,Coleman,F020137COL,10/29/02,Hatchery spawn,F,1.56962,This Study,TBD,Yes
+Fall,Coleman,F020140COL,10/29/02,Hatchery spawn,F,1.50705,This Study,TBD,Yes
+Fall,Coleman,F020142COL,10/29/02,Hatchery spawn,F,1.39468,This Study,TBD,Yes
+Fall,Coleman,F020154COL,10/29/02,Hatchery spawn,F,1.5146,This Study,TBD,Yes
+Fall,Coleman,F020158COL,10/29/02,Hatchery spawn,F,2.32347,This Study,TBD,Yes
+Fall,Coleman,F020164COL,10/29/02,Hatchery spawn,F,1.42634,This Study,TBD,Yes
+Fall,Deer,F020022DER,11/27/02,carcass survey,F,0.706674,This Study,TBD,Yes
+Fall,Deer,F030013DER,11/12/03,carcass recovery,M,2.59151,This Study,TBD,Yes
+Fall,Deer,F030014DER,11/12/03,carcass recovery,U,2.40078,This Study,TBD,Yes
+Fall,Deer,F040008DER,11/8/04,carcass survey,F,0.35,This Study,TBD,No
+Fall,Deer,F040010DER,11/8/04,carcass survey,M,0.230482,This Study,TBD,No
+Fall,Deer,F040011DER,11/8/04,carcass survey,M,0.134901,This Study,TBD,No
+Fall,Merced,F080027MER,11/24/08,carcass survey,M,0.974221,This Study,TBD,Yes
+Fall,Merced,F010157MER,11/26/01,Escapement survey,F,1.89048,This Study,TBD,Yes
+Fall,Merced,F010240MER,12/13/01,Escapement survey,F,1.01001,This Study,TBD,Yes
+Fall,Merced,F010246MER,12/17/01,Escapement survey,M,0.394394,This Study,TBD,No
+Fall,Merced,F010225MER,12/10/01,Escapement survey,U,3.25348,This Study,TBD,Yes
+Fall,Merced,F010226MER,12/10/01,Escapement survey,M,1.40483,This Study,TBD,Yes
+Fall,Mill,F030040MIL,11/4/03,carcass recovery,F,2.86172,This Study,TBD,Yes
+Fall,Mill,F030045MIL,11/5/03,carcass recovery,F,0.879811,This Study,TBD,Yes
+Fall,Mill,F030051MIL,11/13/03,carcass recovery,F,0.428684,This Study,TBD,No
+Fall,Mill,F030059MIL,11/13/03,carcass recovery,M,0.764267,This Study,TBD,Yes
+Fall,Mill,F030071MIL,11/19/03,carcass recovery,F,0.745379,This Study,TBD,Yes
+Fall,Mill,F030081MIL,11/19/03,carcass recovery,F,2.76155,This Study,TBD,Yes
+Fall,Stanislaus,F010019STN,12/14/01,carcass survey,F,0.921187,This Study,TBD,Yes
+Fall,Stanislaus,F010289STN,11/16/01,carcass survey,F,1.00082,This Study,TBD,Yes
+Fall,Stanislaus,F010290STN,11/16/01,carcass survey,F,0.449379,This Study,TBD,No
+Fall,Stanislaus,F040043STN,11/21/04,Escapement survey,F,0.505767,This Study,TBD,Yes
+Fall,Stanislaus,F040052STN,11/22/04,Escapement survey,F,0.217043,This Study,TBD,No
+Fall,Stanislaus,F040060STN,11/23/04,Escapement survey,F,0.210188,This Study,TBD,No
+Fall,Tuolumne,F080012TOU,11/17/08,carcass survey,M,0.20349,This Study,TBD,No
+Fall,Tuolumne,F080016TOU,11/17/08,carcass survey,F,2.16521,This Study,TBD,Yes
+Fall,Tuolumne,F040033TOU,11/24/04,Escapement survey,M,0.144054,This Study,TBD,No
+Fall,Tuolumne,F040036TOU,11/24/04,Escapement survey,F,0.249795,This Study,TBD,No
+Fall,Tuolumne,F040079TOU,12/13/04,Escapement survey,M,0.187991,This Study,TBD,No
+Fall,Tuolumne,F040020TOU,11/22/04,Escapement survey,F,0.225473,This Study,TBD,No
+Late Fall,Upper Sac,L030077USR,2/24/03,carcass survey,F,0.182993,This Study,TBD,No
+Late Fall,Upper Sac,L030082USR,3/3/03,carcass survey,F,0.165614,This Study,TBD,No
+Late Fall,Upper Sac,L030085USR,3/4/03,carcass survey,F,0.762554,This Study,TBD,Yes
+Late Fall,Upper Sac,L030091USR,3/5/03,carcass survey,F,0.418054,This Study,TBD,No
+Late Fall,Upper Sac,L030092USR,3/5/03,carcass survey,F,0.390133,This Study,TBD,No
+Late Fall,Upper Sac,L030094USR,3/5/03,carcass survey,F,0.489897,This Study,TBD,No
+Spring,Butte,S080015BUT,9/25/08,carcass survey,F,1.37419,This Study,TBD,Yes
+Spring,Butte,S080019BUT,9/25/08,carcass survey,M,0.204483,This Study,TBD,No
+Spring,Butte,S080034BUT,9/30/08,carcass survey,M,0.517513,This Study,TBD,Yes
+Spring,Butte,S080037BUT,9/30/08,carcass survey,F,0.568156,This Study,TBD,Yes
+Spring,Butte,S080040BUT,10/1/08,carcass survey,F,1.1492,This Study,TBD,Yes
+Spring,Butte,S080051BUT,10/2/08,carcass survey,M,2.63439,This Study,TBD,Yes
+Spring,Butte,S080052BUT,10/2/08,carcass survey,F,0.459346,This Study,TBD,No
+Spring,Deer,S020022DER,10/8/02,carcass survey,F,0.497768,This Study,TBD,No
+Spring,Deer,S020032DER,10/8/02,carcass survey,F,0.225877,This Study,TBD,No
+Spring,Deer,S020037DER,10/8/02,carcass survey,F,0.533386,This Study,TBD,Yes
+Spring,Deer,S020039DER,10/8/02,carcass survey,F,0.498801,This Study,TBD,No
+Spring,Deer,S020041DER,10/8/02,carcass survey,F,0.447783,This Study,TBD,No
+Spring,Deer,S020045DER,10/8/02,carcass survey,F,0.618048,This Study,TBD,Yes
+Spring,Deer,S020050DER,9/25/02,carcass survey,F,0.358529,This Study,TBD,No
+Spring,Deer,S020055DER,10/10/02,carcass survey,F,0.559651,This Study,TBD,Yes
+Spring,Deer,S020061DER,10/9/02,carcass survey,F,0.508915,This Study,TBD,Yes
+Spring,Deer,S020064DER,10/2/02,carcass survey,F,0.417609,This Study,TBD,No
+Spring,Deer,S020078DER,10/10/02,carcass survey,F,0.254321,This Study,TBD,No
+Spring,Deer,S050007DER,9/28/05,carcass recovery,M,1.41021,This Study,TBD,Yes
+Spring,Deer,S050016DER,9/28/05,carcass recovery,M,2.73392,This Study,TBD,Yes
+Spring,Deer,S050040DER,10/4/05,carcass recovery,F,0.574556,This Study,TBD,Yes
+Spring,Deer,S050054DER,10/4/05,carcass recovery,F,1.34355,This Study,TBD,Yes
+Spring,Mill,S020021MIL,10/3/02,carcass recovery,F,0.542623,This Study,TBD,Yes
+Spring,Mill,S020023MIL,10/7/02,carcass recovery,F,0.744256,This Study,TBD,Yes
+Spring,Mill,S020024MIL,10/7/02,carcass recovery,F,0.508042,This Study,TBD,Yes
+Spring,Mill,S020025MIL,10/7/02,carcass recovery,M,0.803957,This Study,TBD,Yes
+Spring,Mill,S020034MIL,10/9/02,carcass recovery,F,0.749826,This Study,TBD,Yes
+Spring,Mill,S020035MIL,10/8/02,carcass recovery,F,0.862026,This Study,TBD,Yes
+Spring,Mill,S020052MIL,10/9/02,carcass recovery,F,0.595799,This Study,TBD,Yes
+Spring,Mill,S020054MIL,10/16/02,carcass recovery,M,0.354097,This Study,TBD,No
+Spring,Mill,S020057MIL,10/15/02,carcass recovery,F,0.661445,This Study,TBD,Yes
+Spring,Mill,S040028MIL,10/7/04,carcass survey,F,1.11088,This Study,TBD,Yes
+Spring,Mill,S040031MIL,10/7/04,carcass survey,F,1.55454,This Study,TBD,Yes
+Spring,Mill,S040113MIL,10/7/04,carcass survey,M,0.228898,This Study,TBD,No
+Spring,Mill,S040114MIL,10/7/04,carcass survey,F,1.69293,This Study,TBD,Yes
+Spring,Mill,S040116MIL,10/7/04,carcass survey,F,2.40219,This Study,TBD,Yes
+Spring,Mill,S040117MIL,10/7/04,carcass survey,F,0.527029,This Study,TBD,Yes
+Spring,Yuba,S980004YUB,10/1/98,Otolith Survey,M,2.83748,This Study,TBD,Yes
+Spring,Yuba,S990001YUB,6/11/99,Fish Rescue,F,3.08845,This Study,TBD,Yes
+Spring,Yuba,S990002YUB,6/11/99,Fish Rescue,F,1.01734,This Study,TBD,Yes
+Spring,Yuba,S990004YUB,6/11/99,Fish Rescue,F,2.46692,This Study,TBD,Yes
+Spring,Yuba,S990005YUB,6/11/99,Fish Rescue,F,2.18018,This Study,TBD,Yes
+Winter,Upper Sac,W011922USR,6/6/01,Fish ladder,M,4.19241,This Study,TBD,Yes
+Winter,Upper Sac,W011924USR,6/6/01,Fish ladder,F,7.18753,This Study,TBD,Yes
+Winter,Upper Sac,W011933USR,6/6/01,Fish ladder,M,4.54292,This Study,TBD,Yes
+Winter,Upper Sac,W011934USR,6/6/01,Fish ladder,M,2.93874,This Study,TBD,Yes
+Winter,Upper Sac,W011812USR,3/14/01,Fish ladder,F,3.50872,This Study,TBD,Yes
+Winter,Upper Sac,W011815USR,3/21/01,Fish ladder,M,3.24306,This Study,TBD,Yes
+Fall,Feather River Hatchery,DPCh_plate1_A05,NA,NA,NA,1.12662,Thompson et al. (2020),SRR12798310,Yes
+Fall,Feather River Hatchery,DPCh_plate1_A06,NA,NA,NA,0.611983,Thompson et al. (2020),SRR12798301,Yes
+Fall,Feather River Hatchery,DPCh_plate1_B05,NA,NA,NA,1.44547,Thompson et al. (2020),SRR12798309,Yes
+Fall,Feather River Hatchery,DPCh_plate1_B06,NA,NA,NA,1.25611,Thompson et al. (2020),SRR12798300,Yes
+Fall,Feather River Hatchery,DPCh_plate1_C05,NA,NA,NA,1.79118,Thompson et al. (2020),SRR12798308,Yes
+Fall,Feather River Hatchery,DPCh_plate1_C06,NA,NA,NA,1.32261,Thompson et al. (2020),SRR12798299,Yes
+Fall,Feather River Hatchery,DPCh_plate1_D05,NA,NA,NA,1.38435,Thompson et al. (2020),SRR12798307,Yes
+Fall,Feather River Hatchery,DPCh_plate1_D06,NA,NA,NA,1.18651,Thompson et al. (2020),SRR12798298,Yes
+Fall,Feather River Hatchery,DPCh_plate1_E05,NA,NA,NA,0.887101,Thompson et al. (2020),SRR12798306,Yes
+Fall,Feather River Hatchery,DPCh_plate1_E06,NA,NA,NA,0.643005,Thompson et al. (2020),SRR12798385,Yes
+Fall,Feather River Hatchery,DPCh_plate1_F05,NA,NA,NA,1.30405,Thompson et al. (2020),SRR12798305,Yes
+Fall,Feather River Hatchery,DPCh_plate1_F06,NA,NA,NA,1.28044,Thompson et al. (2020),SRR12798384,Yes
+Fall,Feather River Hatchery,DPCh_plate1_G05,NA,NA,NA,2.18251,Thompson et al. (2020),SRR12798304,Yes
+Fall,Feather River Hatchery,DPCh_plate1_G06,NA,NA,NA,1.23149,Thompson et al. (2020),SRR12798383,Yes
+Fall,Feather River Hatchery,DPCh_plate1_H05,NA,NA,NA,1.54476,Thompson et al. (2020),SRR12798303,Yes
+Fall,Feather River Hatchery,DPCh_plate1_H06,NA,NA,NA,1.63511,Thompson et al. (2020),SRR12798382,Yes
+Fall,San Joaquin River,DPCh_plate2_A01,NA,NA,NA,1.42159,Thompson et al. (2020),SRR12798352,Yes
+Fall,San Joaquin River,DPCh_plate2_A02,NA,NA,NA,1.14233,Thompson et al. (2020),SRR12798429,Yes
+Fall,San Joaquin River,DPCh_plate2_B01,NA,NA,NA,1.61985,Thompson et al. (2020),SRR12798351,Yes
+Fall,San Joaquin River,DPCh_plate2_B02,NA,NA,NA,2.02346,Thompson et al. (2020),SRR12798428,Yes
+Fall,San Joaquin River,DPCh_plate2_C01,NA,NA,NA,1.29413,Thompson et al. (2020),SRR12798350,Yes
+Fall,San Joaquin River,DPCh_plate2_C02,NA,NA,NA,1.2897,Thompson et al. (2020),SRR12798427,Yes
+Fall,San Joaquin River,DPCh_plate2_D01,NA,NA,NA,1.48942,Thompson et al. (2020),SRR12798349,Yes
+Fall,San Joaquin River,DPCh_plate2_D02,NA,NA,NA,1.39757,Thompson et al. (2020),SRR12798426,Yes
+Fall,San Joaquin River,DPCh_plate2_E01,NA,NA,NA,1.4786300000000001,Thompson et al. (2020),SRR12798433,Yes
+Fall,San Joaquin River,DPCh_plate2_E02,NA,NA,NA,1.42553,Thompson et al. (2020),SRR12798425,Yes
+Fall,San Joaquin River,DPCh_plate2_F01,NA,NA,NA,1.70787,Thompson et al. (2020),SRR12798432,Yes
+Fall,San Joaquin River,DPCh_plate2_F02,NA,NA,NA,1.57726,Thompson et al. (2020),SRR12798424,Yes
+Fall,San Joaquin River,DPCh_plate2_G01,NA,NA,NA,1.83365,Thompson et al. (2020),SRR12798431,Yes
+Fall,San Joaquin River,DPCh_plate2_G02,NA,NA,NA,1.96949,Thompson et al. (2020),SRR12798422,Yes
+Fall,San Joaquin River,DPCh_plate2_H01,NA,NA,NA,1.35898,Thompson et al. (2020),SRR12798430,Yes
+Fall,San Joaquin River,DPCh_plate2_H02,NA,NA,NA,2.22132,Thompson et al. (2020),SRR12798421,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_A03,NA,NA,NA,1.61455,Thompson et al. (2020),SRR12798420,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_A04,NA,NA,NA,1.14074,Thompson et al. (2020),SRR12798411,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_B03,NA,NA,NA,1.25631,Thompson et al. (2020),SRR12798419,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_B04,NA,NA,NA,0.662875,Thompson et al. (2020),SRR12798410,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_C03,NA,NA,NA,1.44121,Thompson et al. (2020),SRR12798418,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_C04,NA,NA,NA,1.24953,Thompson et al. (2020),SRR12798345,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_D03,NA,NA,NA,1.42507,Thompson et al. (2020),SRR12798417,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_D04,NA,NA,NA,1.2161,Thompson et al. (2020),SRR12798344,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_E03,NA,NA,NA,1.38949,Thompson et al. (2020),SRR12798416,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_E04,NA,NA,NA,1.5219,Thompson et al. (2020),SRR12798343,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_F03,NA,NA,NA,1.5747,Thompson et al. (2020),SRR12798415,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_F04,NA,NA,NA,1.29507,Thompson et al. (2020),SRR12798342,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_G03,NA,NA,NA,1.93257,Thompson et al. (2020),SRR12798414,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_G04,NA,NA,NA,1.63154,Thompson et al. (2020),SRR12798341,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_H03,NA,NA,NA,1.71644,Thompson et al. (2020),SRR12798413,Yes
+Late Fall,Coleman Hatchery,DPCh_plate2_H04,NA,NA,NA,1.68548,Thompson et al. (2020),SRR12798340,Yes
+Spring,Butte Creek,DPCh_plate2_A07,NA,NA,NA,1.56008,Thompson et al. (2020),SRR12798409,Yes
+Spring,Butte Creek,DPCh_plate2_A08,NA,NA,NA,0.569022,Thompson et al. (2020),SRR12798400,Yes
+Spring,Butte Creek,DPCh_plate2_B07,NA,NA,NA,1.26929,Thompson et al. (2020),SRR12798408,Yes
+Spring,Butte Creek,DPCh_plate2_B08,NA,NA,NA,0.967269,Thompson et al. (2020),SRR12798399,Yes
+Spring,Butte Creek,DPCh_plate2_C07,NA,NA,NA,0.988591,Thompson et al. (2020),SRR12798407,Yes
+Spring,Butte Creek,DPCh_plate2_C08,NA,NA,NA,0.472629,Thompson et al. (2020),SRR12798398,No
+Spring,Butte Creek,DPCh_plate2_D07,NA,NA,NA,1.87868,Thompson et al. (2020),SRR12798406,Yes
+Spring,Butte Creek,DPCh_plate2_D08,NA,NA,NA,2.73778,Thompson et al. (2020),SRR12798397,Yes
+Spring,Butte Creek,DPCh_plate2_E07,NA,NA,NA,1.55325,Thompson et al. (2020),SRR12798405,Yes
+Spring,Butte Creek,DPCh_plate2_E08,NA,NA,NA,0.875735,Thompson et al. (2020),SRR12798396,Yes
+Spring,Butte Creek,DPCh_plate2_F07,NA,NA,NA,1.55325,Thompson et al. (2020),SRR12798404,Yes
+Spring,Butte Creek,DPCh_plate2_F08,NA,NA,NA,0.996617,Thompson et al. (2020),SRR12798395,Yes
+Spring,Butte Creek,DPCh_plate2_G07,NA,NA,NA,2.01421,Thompson et al. (2020),SRR12798402,Yes
+Spring,Butte Creek,DPCh_plate2_G08,NA,NA,NA,0.846337,Thompson et al. (2020),SRR12798394,Yes
+Spring,Butte Creek,DPCh_plate2_H07,NA,NA,NA,1.64135,Thompson et al. (2020),SRR12798401,Yes
+Spring,Butte Creek,DPCh_plate2_H08,NA,NA,NA,1.08703,Thompson et al. (2020),SRR12798393,Yes
+Spring,Feather River Hatchery,DPCh_plate1_A07,NA,NA,NA,1.34286,Thompson et al. (2020),SRR12798381,Yes
+Spring,Feather River Hatchery,DPCh_plate1_A08,NA,NA,NA,1.46535,Thompson et al. (2020),SRR12798372,Yes
+Spring,Feather River Hatchery,DPCh_plate1_B07,NA,NA,NA,1.5267,Thompson et al. (2020),SRR12798380,Yes
+Spring,Feather River Hatchery,DPCh_plate1_B08,NA,NA,NA,1.38461,Thompson et al. (2020),SRR12798371,Yes
+Spring,Feather River Hatchery,DPCh_plate1_C07,NA,NA,NA,0.507718,Thompson et al. (2020),SRR12798378,Yes
+Spring,Feather River Hatchery,DPCh_plate1_C08,NA,NA,NA,1.4213,Thompson et al. (2020),SRR12798370,Yes
+Spring,Feather River Hatchery,DPCh_plate1_D07,NA,NA,NA,1.2881,Thompson et al. (2020),SRR12798377,Yes
+Spring,Feather River Hatchery,DPCh_plate1_D08,NA,NA,NA,1.59284,Thompson et al. (2020),SRR12798369,Yes
+Spring,Feather River Hatchery,DPCh_plate1_E07,NA,NA,NA,1.45449,Thompson et al. (2020),SRR12798376,Yes
+Spring,Feather River Hatchery,DPCh_plate1_E08,NA,NA,NA,0.484124,Thompson et al. (2020),SRR12798367,No
+Spring,Feather River Hatchery,DPCh_plate1_F07,NA,NA,NA,1.42076,Thompson et al. (2020),SRR12798375,Yes
+Spring,Feather River Hatchery,DPCh_plate1_F08,NA,NA,NA,1.27169,Thompson et al. (2020),SRR12798366,Yes
+Spring,Feather River Hatchery,DPCh_plate1_G07,NA,NA,NA,1.26503,Thompson et al. (2020),SRR12798374,Yes
+Spring,Feather River Hatchery,DPCh_plate1_G08,NA,NA,NA,1.41615,Thompson et al. (2020),SRR12798365,Yes
+Spring,Feather River Hatchery,DPCh_plate1_H07,NA,NA,NA,1.40236,Thompson et al. (2020),SRR12798373,Yes
+Spring,Feather River Hatchery,DPCh_plate1_H08,NA,NA,NA,1.33588,Thompson et al. (2020),SRR12798364,Yes
+Winter,Sacramento River,DPCh_plate2_A05,NA,NA,NA,0.966201,Thompson et al. (2020),SRR12798339,Yes
+Winter,Sacramento River,DPCh_plate2_A06,NA,NA,NA,1.3546,Thompson et al. (2020),SRR12798330,Yes
+Winter,Sacramento River,DPCh_plate2_B05,NA,NA,NA,1.72189,Thompson et al. (2020),SRR12798338,Yes
+Winter,Sacramento River,DPCh_plate2_B06,NA,NA,NA,1.74834,Thompson et al. (2020),SRR12798329,Yes
+Winter,Sacramento River,DPCh_plate2_C05,NA,NA,NA,1.11872,Thompson et al. (2020),SRR12798336,Yes
+Winter,Sacramento River,DPCh_plate2_C06,NA,NA,NA,1.8565,Thompson et al. (2020),SRR12798328,Yes
+Winter,Sacramento River,DPCh_plate2_D05,NA,NA,NA,1.74885,Thompson et al. (2020),SRR12798335,Yes
+Winter,Sacramento River,DPCh_plate2_D06,NA,NA,NA,1.95742,Thompson et al. (2020),SRR12798327,Yes
+Winter,Sacramento River,DPCh_plate2_E05,NA,NA,NA,1.49485,Thompson et al. (2020),SRR12798334,Yes
+Winter,Sacramento River,DPCh_plate2_E06,NA,NA,NA,2.01624,Thompson et al. (2020),SRR12798325,Yes
+Winter,Sacramento River,DPCh_plate2_F05,NA,NA,NA,1.55537,Thompson et al. (2020),SRR12798333,Yes
+Winter,Sacramento River,DPCh_plate2_F06,NA,NA,NA,2.16937,Thompson et al. (2020),SRR12798324,Yes
+Winter,Sacramento River,DPCh_plate2_G05,NA,NA,NA,1.57736,Thompson et al. (2020),SRR12798332,Yes
+Winter,Sacramento River,DPCh_plate2_G06,NA,NA,NA,0.844599,Thompson et al. (2020),SRR12798323,Yes
+Winter,Sacramento River,DPCh_plate2_H05,NA,NA,NA,2.08629,Thompson et al. (2020),SRR12798331,Yes
+Winter,Sacramento River,DPCh_plate2_H06,NA,NA,NA,2.46558,Thompson et al. (2020),SRR12798322,Yes

@@ -73,7 +73,7 @@ total3<-total2 %>% filter(!(Tributary %in% c("Salmon River Fall","Salmon River S
 total3$Tributary<-gsub(" Fall| Spring| Late Fall| Winter", "",total3$Tributary)
 
 grandtotal<-bind_rows(newmeta2,total3) %>% mutate("Used in Assay Design"=ifelse(Coverage > 0.5, "Yes","No"))
-toprint<-grandtotal %>% select(Run, Tributary, `Sample ID`, Coverage, Source, `SRA Accession`, `Used in Assay Design`) %>%
+toprint<-grandtotal %>% select(Run, Tributary, `Sample ID`, `Sample Date`, `Sampling Method`, Sex, Coverage, Source, `SRA Accession`, `Used in Assay Design`) %>%
   arrange(Source, Run, Tributary)
 
 write_csv(toprint, "supplemental-docs/Supplemental Table SX.csv")
