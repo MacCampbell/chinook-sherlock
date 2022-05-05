@@ -69,5 +69,10 @@ do
   fastq-dump --outdir ./ --gzip --skip-technical --read-filter pass --dumpbase --split-3 --clip $name " > $name.sh
   sbatch -p high -t 2-0:00:00 --mem=8G $name.sh
 
-done < $list
+done < $list     
 
+
+### RFU Data     
+Spreadsheet at https://github.com/MacCampbell/chinook-sherlock/blob/main/RFU/RFUdata_allsamples_050322.xlsx     
+       
+SHERLOCK Assay Name, the target run type of the SHERLOCK assay, the sample ID of all DNA samples tested, the sample run type, the tributary from which the sample was collected, the Relative Fluorescent Units (RFU) for each sample after running SHERLOCK for 1 hr at 37 degrees C, and the background subtracted RFUs for each sample. 
